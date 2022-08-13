@@ -31,7 +31,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     for time in raw_schedules.select(&sel_th) {
         schedules.push(time.inner_html());
     }
-    println!("{:#?}", schedules);
 
     // Find the timetable values
     let raw_timetable_values = raw_timetable.select(&sel_tbody).next().unwrap();
@@ -58,9 +57,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             courses: courses_vec,
         })
     }
-    println!("{:#?}", timetable);
 
     // TODO: Make fn who chacke if timetable is bell built (time consistency)
+    if !check_timetable_consistency(&schedules, &timetable) {
+        panic!("Error when building the timetable.");
+    }
 
     Ok(())
+}
+
+/// Check if the timetable is well built
+fn check_timetable_consistency(schedules: &Vec<String>, timetable: &Vec<models::Day>) -> bool {
+    // No work during week-end
+    if timetable.len() == 5 {
+        // TODO: Check if schedules.len() is coherent
+        // with the values inside the timetable
+        println!("{:#?}", schedules);
+        println!("{:#?}", timetable);
+        return true;
+    }
+
+    false
 }

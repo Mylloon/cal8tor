@@ -11,19 +11,56 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let html = include_str!("../target/debug.html");
 
     // Parse document
-    let document = Html::parse_document(&html);
+    let document = Html::parse_document(html);
+
+    // Selectors
+    let sel_table = Selector::parse("table").unwrap();
+    let sel_tr    = Selector::parse("tr").unwrap();
+    let sel_tbody = Selector::parse("tbody").unwrap();
+    let sel_th    = Selector::parse("th").unwrap();
+    let sel_td    = Selector::parse("td").unwrap();
 
     // Find the timetable
-    let selector_timetable = Selector::parse("table").unwrap();
-    let raw_timetable = document.select(&selector_timetable).next().unwrap();
-
-    //println!("{}", &raw_timetable.inner_html());
+    let raw_timetable = document.select(&sel_table).next().unwrap();
 
     // Find the slots available for the timetable
-    let selector_schedules = Selector::parse("tr").unwrap();
-    let raw_schedules = raw_timetable.select(&selector_schedules).next().unwrap();
-    println!("{}", &raw_schedules.inner_html());
+    let raw_schedules = raw_timetable.select(&sel_tr).next().unwrap();
 
+    // Find availables schedules
+    let mut schedules = Vec::new();
+    for time in raw_schedules.select(&sel_th) {
+        schedules.push(time.inner_html());
+    }
+    println!("{:#?}", schedules);
+
+    // Find the timetable values
+    let raw_timetable_values = raw_timetable.select(&sel_tbody).next().unwrap();
+
+    // For each days
+    let mut timetable = Vec::new();
+    for day in raw_timetable_values.select(&sel_tr) {
+        let mut courses_vec = Vec::new();
+        for course in day.select(&sel_td) {
+            if course.inner_html() == "—" {
+                courses_vec.push(None);
+            } else {
+                courses_vec.push(Some(models::Course {
+                    professor: "coucou".to_string(),
+                    room: Vec::new(),
+                    start: 0,
+                    size: 1,
+                }));
+            }
+        }
+
+        timetable.push(models::Day {
+            name: day.select(&sel_th).next().unwrap().inner_html(),
+            courses: courses_vec,
+        })
+    }
+    println!("{:#?}", timetable);
+
+    // TODO: Make fn who chacke if timetable is bell built (time consistency)
 
     Ok(())
 }

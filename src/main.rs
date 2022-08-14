@@ -15,10 +15,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Selectors
     let sel_table = Selector::parse("table").unwrap();
-    let sel_tr    = Selector::parse("tr").unwrap();
+    let sel_tr = Selector::parse("tr").unwrap();
     let sel_tbody = Selector::parse("tbody").unwrap();
-    let sel_th    = Selector::parse("th").unwrap();
-    let sel_td    = Selector::parse("td").unwrap();
+    let sel_th = Selector::parse("th").unwrap();
+    let sel_td = Selector::parse("td").unwrap();
+    let sel_em = Selector::parse("em").unwrap();
+    let sel_small = Selector::parse("small").unwrap();
+    let sel_strong = Selector::parse("strong").unwrap();
 
     // Find the timetable
     let raw_timetable = document.select(&sel_table).next().unwrap();
@@ -39,18 +42,48 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut timetable = Vec::new();
     for day in raw_timetable_values.select(&sel_tr) {
         let mut courses_vec = Vec::new();
+        let mut location_tracker = 0;
         for course in day.select(&sel_td) {
             if course.inner_html() == "—" {
                 courses_vec.push(None);
+                location_tracker += 1;
             } else {
                 courses_vec.push(Some(models::Course {
-                    professor: "coucou".to_string(),
-                    room: Vec::new(),
-                    start: 0,
-                    size: 1,
+                    name: course.select(&sel_em).next().unwrap().inner_html(),
+                    professor: match course
+                        .select(&sel_small)
+                        .next()
+                        .unwrap()
+                        .inner_html()
+                        .split("<br>")
+                        .next()
+                    {
+                        Some(data) => {
+                            if data.contains("</strong>") {
+                                // This is the room, so there is no professor assigned
+                                // to this courses yet
+                                None
+                            } else {
+                                Some(data.to_string())
+                            }
+                        }
+                        None => None,
+                    },
+                    room: course.select(&sel_strong).next().unwrap().inner_html(),
+                    start: location_tracker,
+                    size: match course.value().attr("colspan") {
+                        Some(i) => i.parse().unwrap(),
+                        None => 1,
+                    },
                 }));
+
+                match &courses_vec[courses_vec.len() - 1] {
+                    Some(course) => location_tracker += course.size,
+                    None => location_tracker += 1,
+                }
             }
         }
+        println!("\n");
 
         timetable.push(models::Day {
             name: day.select(&sel_th).next().unwrap().inner_html(),
@@ -68,14 +101,29 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 /// Check if the timetable is well built
 fn check_timetable_consistency(schedules: &Vec<String>, timetable: &Vec<models::Day>) -> bool {
-    // No work during week-end
-    if timetable.len() == 5 {
-        // TODO: Check if schedules.len() is coherent
-        // with the values inside the timetable
-        println!("{:#?}", schedules);
-        println!("{:#?}", timetable);
-        return true;
+    let mut checker = true;
+    for day in timetable {
+        let mut i = 0;
+        for course in &day.courses {
+            match course {
+                Some(course_it) => {
+                    // Checks the consistency of course start times
+                    if i != course_it.start {
+                        checker = false;
+                        break;
+                    }
+                    // Keep the track of how many courses are in the day
+                    i += course_it.size
+                }
+                None => i += 1,
+            }
+        }
+        // The counter should be the same as the amount of possible hours of the day
+        if i != schedules.len() {
+            checker = false;
+            break;
+        }
     }
 
-    false
+    checker
 }

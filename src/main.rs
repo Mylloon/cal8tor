@@ -3,15 +3,8 @@ use scraper::{Html, Selector};
 mod models;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    //let url = "https://informatique.up8.edu/licence-iv/edt/l3.html";
-
-    // Get raw html
-    //let html = reqwest::get(url).await?.text().await?;
-    let html = include_str!("../target/debug.html");
-
-    // Parse document
-    let document = Html::parse_document(html);
+async fn main() {
+    let document = get_webpage(3, 1, None).await.expect("Can't reach website.");
 
     // Selectors
     let sel_table = Selector::parse("table").unwrap();
@@ -83,7 +76,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
         }
-        println!("\n");
 
         timetable.push(models::Day {
             name: day.select(&sel_th).next().unwrap().inner_html(),
@@ -95,8 +87,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if !check_timetable_consistency(&schedules, &timetable) {
         panic!("Error when building the timetable.");
     }
-
-    Ok(())
 }
 
 /// Check if the timetable is well built
@@ -126,4 +116,62 @@ fn check_timetable_consistency(schedules: &Vec<String>, timetable: &Vec<models::
     }
 
     checker
+}
+
+async fn get_webpage(
+    _year: i8,
+    _semester: i8,
+    _letter: Option<char>,
+) -> Result<Html, Box<dyn std::error::Error>> {
+    /* let url = {
+        let panic_semester_message = "Unknown semester.";
+        let panic_letter_message = "Unknown letter.";
+
+        let base_url = "https://informatique.up8.edu/licence-iv/edt";
+        match year {
+            1 => {
+                let allow_letters = match semester {
+                    1 => ['a', 'b', 'c'],
+                    2 => ['x', 'y', 'z'],
+                    _ => panic!("{}", panic_semester_message),
+                };
+                let c = letter.expect(panic_letter_message);
+                if allow_letters.contains(&c) {
+                    format!("{}/l1-{}.html", base_url, c)
+                } else {
+                    panic!("{}", panic_letter_message)
+                }
+            }
+            2 => {
+                let allow_letters = match semester {
+                    1 => ['a', 'b'],
+                    2 => ['x', 'y'],
+                    _ => panic!("{}", panic_semester_message),
+                };
+                let c = letter.expect(panic_letter_message);
+                if allow_letters.contains(&c) {
+                    format!("{}/l2-{}.html", base_url, c)
+                } else {
+                    panic!("{}", panic_letter_message)
+                }
+            }
+            3 => match semester {
+                1 => format!("{}/l3.html", base_url),
+                2 => format!("{}/l3_2.html", base_url),
+                _ => panic!("{}", panic_semester_message),
+            },
+            _ => panic!("Unknown year."),
+        }
+    };
+
+    // Get raw html
+    let html = reqwest::get(url).await?.text().await?;
+
+    // Parse document
+    let document = Html::parse_document(&html); */
+
+    let html = include_str!("../target/debug.html");
+    let document = Html::parse_document(html);
+
+    Ok(document)
 }

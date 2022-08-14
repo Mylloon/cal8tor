@@ -1,19 +1,22 @@
 #[derive(Debug)]
 pub struct Course {
+    /// Course's name
+    pub name: String,
+
     /// Professor's name
-    pub professor: String,
+    pub professor: Option<String>,
 
     /// List of rooms where the course takes place
-    pub room: Vec<String>,
+    pub room: String,
 
     /// Time the course starts, as a number :
     /// - 0 => first possible class of the day
     /// - 1 => second possible class of the day
     /// - etc.
-    pub start: i8,
+    pub start: usize,
 
     /// Number of time slots the course takes up in the timetable
-    pub size: i8,
+    pub size: usize,
 }
 #[derive(Debug)]
 pub struct Day {

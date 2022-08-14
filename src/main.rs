@@ -83,7 +83,6 @@ async fn main() {
         })
     }
 
-    // TODO: Make fn who chacke if timetable is bell built (time consistency)
     if !check_timetable_consistency(&schedules, &timetable) {
         panic!("Error when building the timetable.");
     }

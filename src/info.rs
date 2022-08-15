@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
-use chrono::{Duration, TimeZone, Utc};
+use chrono::{DateTime, Duration, TimeZone, Utc};
 use regex::{Captures, Regex};
 use scraper::{Html, Selector};
 
-pub async fn info() {
+pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, DateTime<Utc>)>> {
     let document = get_webpage().await.expect("Can't reach info website.");
 
     // Selectors
@@ -57,7 +57,7 @@ pub async fn info() {
         }
     }
 
-    println!("{:#?}", data);
+    data
 }
 
 /// Get info webpage
@@ -100,7 +100,7 @@ fn anglophonization(date: &str) -> String {
 }
 
 /// Turn a string to a DateTime
-fn get_date(date: &str) -> chrono::DateTime<Utc> {
+fn get_date(date: &str) -> DateTime<Utc> {
     // Use and keep UTC time, we have the hour set to 12h and
     // Paris 8 is in France so there is no problems
     Utc.datetime_from_str(&anglophonization(date), "%e %B %Y %H:%M")

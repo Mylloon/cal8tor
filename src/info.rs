@@ -31,16 +31,13 @@ pub async fn info() {
 
                     let start_date = get_date(captures.name("d").unwrap().as_str());
 
-                    let rep: i64 = captures.name("r").unwrap().as_str().parse().expect("NaN");
+                    let rep: i64 = captures.name("r").unwrap().as_str().parse().unwrap();
                     // -1 car la première semaine est déjà compté
                     let end_date = start_date + Duration::weeks(rep - 1);
 
                     data.insert(
                         i,
-                        format!(
-                            "{} pendant {} semaines, donc arrêt le {}",
-                            start_date, rep, end_date
-                        ),
+                        vec![(start_date, end_date)],
                     );
                 }
                 e if e.starts_with("Reprise") => {
@@ -49,19 +46,16 @@ pub async fn info() {
 
                     let start_date = get_date(captures.name("d").unwrap().as_str());
 
-                    let rep: i64 = captures.name("r").unwrap().as_str().parse().expect("NaN");
+                    let rep: i64 = captures.name("r").unwrap().as_str().parse().unwrap();
                     // -1 car la première semaine est déjà compté
                     let end_date = start_date + Duration::weeks(rep - 1);
 
+                    let mut vec = data.get(&i).unwrap().to_owned();
+                    vec.push((start_date, end_date));
+
                     data.insert(
                         i,
-                        format!(
-                            "{}. Puis reprise {} pendant {} semaines, donc arrêt le {}",
-                            data.get(&i).unwrap(),
-                            start_date,
-                            rep,
-                            end_date
-                        ),
+                        vec,
                     );
                 }
                 _ => (),

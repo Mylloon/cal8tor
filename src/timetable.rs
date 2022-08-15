@@ -1,9 +1,11 @@
-use scraper::{Selector, Html};
+use scraper::{Html, Selector};
 
 mod models;
 
 pub async fn timetable(year: i8, semester: i8, letter: Option<char>) -> Vec<models::Day> {
-    let document = get_webpage(year, semester, letter).await.expect("Can't reach timetable website.");
+    let document = get_webpage(year, semester, letter)
+        .await
+        .expect("Can't reach timetable website.");
 
     // Selectors
     let sel_table = Selector::parse("table").unwrap();

@@ -47,10 +47,12 @@ pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, DateTime<Utc>)>> {
                     // -1 car la première semaine est déjà compté
                     let end_date = start_date + Duration::weeks(rep - 1);
 
-                    let mut vec = data.get(&i).unwrap().to_owned();
+                    let it = i + 1;
+
+                    let mut vec = data.get(&it).unwrap().to_owned();
                     vec.push((start_date, end_date));
 
-                    data.insert(i + 1, vec);
+                    data.insert(it, vec);
                 }
                 _ => (),
             }

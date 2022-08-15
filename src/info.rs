@@ -1,8 +1,17 @@
-use scraper::Html;
+use scraper::{Html, Selector};
 
 pub async fn info() {
-    let _document_info = get_webpage().await.expect("Can't reach info website.");
-    // println!("{:#?}", document_info);
+    let document = get_webpage().await.expect("Can't reach info website.");
+
+    // Selectors
+    let sel_ul = Selector::parse("ul").unwrap();
+
+    // Find the raw infos in html page
+    for (i, data) in document.select(&sel_ul).enumerate() {
+        if [1, 2].contains(&i) {
+            println!("\n{} - {:#?}", data.value().name(), data.inner_html());
+        }
+    }
 }
 
 async fn get_webpage() -> Result<Html, Box<dyn std::error::Error>> {

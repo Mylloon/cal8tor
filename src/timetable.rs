@@ -1,9 +1,15 @@
+use std::collections::HashMap;
+
 use scraper::{Html, Selector};
 
 pub mod models;
 
 /// Fetch the timetable for a class
-pub async fn timetable(year: i8, semester: i8, letter: Option<char>) -> Vec<models::Day> {
+pub async fn timetable(
+    year: i8,
+    semester: i8,
+    letter: Option<char>,
+) -> HashMap<usize, Vec<models::Day>> {
     let document = get_webpage(year, semester, letter)
         .await
         .expect("Can't reach timetable website.");
@@ -94,7 +100,7 @@ pub async fn timetable(year: i8, semester: i8, letter: Option<char>) -> Vec<mode
         panic!("Error when building the timetable.");
     }
 
-    timetable
+    HashMap::from([(semester as usize, timetable)])
 }
 
 /// Get timetable webpage

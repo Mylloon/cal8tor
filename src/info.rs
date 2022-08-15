@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use chrono::{TimeZone, Utc};
+use chrono::{Duration, TimeZone, Utc};
 use regex::{Captures, Regex};
 use scraper::{Html, Selector};
 
@@ -29,27 +29,38 @@ pub async fn info() {
                 e if e.starts_with("Début") => {
                     let captures = re.captures(&e).unwrap();
 
-                    let date = captures.name("d").unwrap().as_str();
-                    let rep = captures.name("r").unwrap().as_str();
+                    let start_date = get_date(captures.name("d").unwrap().as_str());
 
-                    let from = Utc
-                        .datetime_from_str(&anglophonization(date), "%e %B %Y %H:%M")
-                        .unwrap();
+                    let rep: i64 = captures.name("r").unwrap().as_str().parse().expect("NaN");
+                    // -1 car la première semaine est déjà compté
+                    let end_date = start_date + Duration::weeks(rep - 1);
 
-                    println!("'{}' -> {}", date, from);
-
-                    data.insert(i, format!("{} pendant {}s", date, rep));
+                    data.insert(
+                        i,
+                        format!(
+                            "{} pendant {} semaines, donc arrêt le {}",
+                            start_date, rep, end_date
+                        ),
+                    );
                 }
                 e if e.starts_with("Reprise") => {
                     let captures = re.captures(&e).unwrap();
                     captures.name("g");
+
+                    let start_date = get_date(captures.name("d").unwrap().as_str());
+
+                    let rep: i64 = captures.name("r").unwrap().as_str().parse().expect("NaN");
+                    // -1 car la première semaine est déjà compté
+                    let end_date = start_date + Duration::weeks(rep - 1);
+
                     data.insert(
                         i,
                         format!(
-                            "{} puis reprise {} pendant {}s",
+                            "{}. Puis reprise {} pendant {} semaines, donc arrêt le {}",
                             data.get(&i).unwrap(),
-                            captures.name("d").unwrap().as_str(),
-                            captures.name("r").unwrap().as_str()
+                            start_date,
+                            rep,
+                            end_date
                         ),
                     );
                 }
@@ -98,4 +109,12 @@ fn anglophonization(date: &str) -> String {
             }
         })
     )
+}
+
+/// Turn a string to a DateTime
+fn get_date(date: &str) -> chrono::DateTime<Utc> {
+    // Use and keep UTC time, we have the hour set to 12h and
+    // Paris 8 is in France so there is no problems
+    Utc.datetime_from_str(&anglophonization(date), "%e %B %Y %H:%M")
+        .unwrap()
 }

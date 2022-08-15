@@ -11,3 +11,4 @@ tokio = { version = "1", features = ["full"] }
 scraper = "0.13.0"
 regex = "1"
 chrono = "0.4"
+ics = "0.5"

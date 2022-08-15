@@ -61,6 +61,7 @@ name = "cal8tor"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "ics",
  "regex",
  "reqwest",
  "scraper",
@@ -446,6 +447,12 @@ dependencies = [
  "wasm-bindgen",
  "winapi",
 ]
+
+[[package]]
+name = "ics"
+version = "0.5.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b891481ef6353e3b97118d4650469e379a39e4373a66908c12f99763182826b1"
 
 [[package]]
 name = "idna"

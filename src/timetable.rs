@@ -3,7 +3,7 @@ use scraper::{Selector, Html};
 mod models;
 
 pub async fn timetable(year: i8, semester: i8, letter: Option<char>) -> Vec<models::Day> {
-    let document_timetable = get_webpage(year, semester, letter).await.expect("Can't reach timetable website.");
+    let document = get_webpage(year, semester, letter).await.expect("Can't reach timetable website.");
 
     // Selectors
     let sel_table = Selector::parse("table").unwrap();
@@ -16,7 +16,7 @@ pub async fn timetable(year: i8, semester: i8, letter: Option<char>) -> Vec<mode
     let sel_strong = Selector::parse("strong").unwrap();
 
     // Find the timetable
-    let raw_timetable = document_timetable.select(&sel_table).next().unwrap();
+    let raw_timetable = document.select(&sel_table).next().unwrap();
 
     // Find the slots available for the timetable
     let raw_schedules = raw_timetable.select(&sel_tr).next().unwrap();

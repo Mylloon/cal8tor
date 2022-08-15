@@ -2,6 +2,7 @@ use scraper::{Html, Selector};
 
 mod models;
 
+/// Fetch the timetable for a class
 pub async fn timetable(year: i8, semester: i8, letter: Option<char>) -> Vec<models::Day> {
     let document = get_webpage(year, semester, letter)
         .await
@@ -96,6 +97,7 @@ pub async fn timetable(year: i8, semester: i8, letter: Option<char>) -> Vec<mode
     timetable
 }
 
+/// Get timetable webpage
 async fn get_webpage(
     year: i8,
     semester: i8,

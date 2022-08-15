@@ -35,10 +35,7 @@ pub async fn info() {
                     // -1 car la première semaine est déjà compté
                     let end_date = start_date + Duration::weeks(rep - 1);
 
-                    data.insert(
-                        i,
-                        vec![(start_date, end_date)],
-                    );
+                    data.insert(i, vec![(start_date, end_date)]);
                 }
                 e if e.starts_with("Reprise") => {
                     let captures = re.captures(&e).unwrap();
@@ -53,10 +50,7 @@ pub async fn info() {
                     let mut vec = data.get(&i).unwrap().to_owned();
                     vec.push((start_date, end_date));
 
-                    data.insert(
-                        i,
-                        vec,
-                    );
+                    data.insert(i, vec);
                 }
                 _ => (),
             }

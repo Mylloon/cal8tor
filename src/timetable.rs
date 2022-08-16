@@ -205,8 +205,8 @@ type T = (
 type D = std::collections::HashMap<
     // Semester
     usize,
-    // List of start and end times of course weeks
-    Vec<(chrono::DateTime<Utc>, chrono::DateTime<Utc>)>,
+    // List of start and repetition of course weeks
+    Vec<(chrono::DateTime<Utc>, i64)>,
 >;
 
 /// Build the timetable
@@ -242,26 +242,33 @@ pub fn build(timetable: T, dates: D) -> Vec<models::Course> {
     let mut semester = Vec::new();
 
     // Start date of the back-to-school week
-    let mut date = dates.get(&timetable.1 .0).unwrap().get(0).unwrap().0;
-    for day in timetable.1 .1 {
-        for mut course in day.courses.into_iter().flatten() {
-            // Get the hours
-            let start = schedules.get(course.start).unwrap().0;
-            let end = schedules.get(course.start + course.size - 1).unwrap().1;
+    let data = dates.get(&timetable.1 .0).unwrap().get(0).unwrap();
+    let mut date = data.0;
+    // For each weeks
+    for _ in 0..(data.1) {
+        for day in &timetable.1 .1 {
+            for mut course in day.courses.clone().into_iter().flatten() {
+                // Get the hours
+                let start = schedules.get(course.start).unwrap().0;
+                // -1 because we only add when the size is > 1
+                let end = schedules.get(course.start + course.size - 1).unwrap().1;
 
-            // Add the changed datetimes
-            course.dtstart = Some(
-                Utc.ymd(date.year(), date.month(), date.day())
-                    .and_hms(start.0, start.1, 0),
-            );
-            course.dtend = Some(
-                Utc.ymd(date.year(), date.month(), date.day())
-                    .and_hms(end.0, end.1, 0),
-            );
+                // Add the changed datetimes
+                course.dtstart = Some(
+                    Utc.ymd(date.year(), date.month(), date.day())
+                        .and_hms(start.0, start.1, 0),
+                );
+                course.dtend = Some(
+                    Utc.ymd(date.year(), date.month(), date.day())
+                        .and_hms(end.0, end.1, 0),
+                );
 
-            semester.push(course);
+                semester.push(course);
+            }
+            date += Duration::days(1);
         }
-        date += Duration::days(1);
+        // From friday to monday
+        date += Duration::days(2);
     }
 
     semester

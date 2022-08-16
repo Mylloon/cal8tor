@@ -26,6 +26,7 @@ pub struct Course {
     /// Filled only when building for the ICS
     pub dtend: Option<chrono::DateTime<chrono::Utc>>,
 }
+
 #[derive(Debug)]
 pub struct Day {
     /// Day's name

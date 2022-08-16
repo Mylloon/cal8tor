@@ -1,22 +1,20 @@
 [package]
 name = "cal8tor"
 version = "0.1.0"
+authors = ["Mylloon"]
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "Extractor of the calendar of the IT degree of university Paris 8"
+readme = "README.md"
+repository = "https://git.kennel.ml/Anri/cal8tor"
+keywords = ["scrape", "calendar"]
+publish = false
 
 [dependencies]
 reqwest = { version = "0.11" }
 tokio = { version = "1", features = ["full"] }
-scraper = "0.13.0"
+scraper = "0.13"
 regex = "1"
 chrono = "0.4"
 ics = "0.5"
+uuid = { version = "1.1", features = ["v4", "fast-rng"] }
 clap = { version = "3.2", features = ["derive"] }
-
-[dependencies.uuid]
-version = "1.1.2"
-features = [
-    "v4",                # Lets you generate random UUIDs
-    "fast-rng",          # Use a faster (but still sufficiently random) RNG
-]

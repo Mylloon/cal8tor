@@ -1,4 +1,4 @@
-use chrono::{TimeZone, Utc};
+use chrono::{Datelike, Duration, TimeZone, Utc};
 use regex::Regex;
 use scraper::{Html, Selector};
 
@@ -238,20 +238,31 @@ pub fn build(timetable: T, dates: D) -> Vec<models::Course> {
         schedules.push(((h1, m1), (h2, m2)));
     }
 
-    let semester = (timetable.1).0;
-    let requested_timetable = (timetable.1).1;
+    // Store all the courses for the semester
+    let mut semester = Vec::new();
 
-    let _requested_dates = dates.get(&semester).unwrap();
+    // Start date of the back-to-school week
+    let mut date = dates.get(&timetable.1 .0).unwrap().get(0).unwrap().0;
+    for day in timetable.1 .1 {
+        for mut course in day.courses.into_iter().flatten() {
+            // Get the hours
+            let start = schedules.get(course.start).unwrap().0;
+            let end = schedules.get(course.start + course.size - 1).unwrap().1;
 
-    println!("{:#?}", requested_timetable);
+            // Add the changed datetimes
+            course.dtstart = Some(
+                Utc.ymd(date.year(), date.month(), date.day())
+                    .and_hms(start.0, start.1, 0),
+            );
+            course.dtend = Some(
+                Utc.ymd(date.year(), date.month(), date.day())
+                    .and_hms(end.0, end.1, 0),
+            );
 
-    vec![models::Course {
-        name: String::from("Cours"),
-        professor: None,
-        room: String::from("A188"),
-        start: 0,
-        size: 0,
-        dtstart: Some(Utc.ymd(2022, 9, 19).and_hms(13, 30, 0)),
-        dtend: Some(Utc.ymd(2022, 9, 19).and_hms(16, 30, 0)),
-    }]
+            semester.push(course);
+        }
+        date += Duration::days(1);
+    }
+
+    semester
 }

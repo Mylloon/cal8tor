@@ -60,7 +60,9 @@ pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, i64)>> {
 /// Get info webpage
 async fn get_webpage() -> Result<Html, Box<dyn std::error::Error>> {
     let url = "https://informatique.up8.edu/licence-iv/edt";
-    let html = reqwest::get(url).await?.text().await?;
+
+    let client = reqwest::Client::builder().user_agent("bypass-rate_limit").build()?;
+    let html = client.get(url).send().await?.text().await?;
 
     // Panic on error
     crate::utils::check_errors(&html, url);

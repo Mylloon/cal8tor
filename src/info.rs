@@ -61,7 +61,11 @@ pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, i64)>> {
 async fn get_webpage() -> Result<Html, Box<dyn std::error::Error>> {
     let url = "https://informatique.up8.edu/licence-iv/edt";
 
-    let client = reqwest::Client::builder().user_agent("bypass-rate_limit").build()?;
+    // We don't use reqwest::get() but a client with a custom user-agent
+    // in order to avoid getting rate limit
+    let client = reqwest::Client::builder()
+        .user_agent("bypass-rate_limit")
+        .build()?;
     let html = client.get(url).send().await?.text().await?;
 
     // Panic on error

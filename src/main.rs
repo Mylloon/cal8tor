@@ -1,5 +1,5 @@
 mod info;
-mod io;
+mod ics;
 mod timetable;
 
 #[tokio::main]
@@ -8,5 +8,5 @@ async fn main() {
 
     let info = info::info().await;
 
-    io::export(timetable, info);
+    ics::export(timetable, info);
 }

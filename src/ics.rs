@@ -8,7 +8,10 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &str) {
 
     // Create events which contains the information regarding the course
     for course in courses {
-        let mut event = Event::new(uuid::Uuid::new_v4().to_string(), dt_ical(chrono::Utc::now()));
+        let mut event = Event::new(
+            uuid::Uuid::new_v4().to_string(),
+            dt_ical(chrono::Utc::now()),
+        );
 
         // Public event
         event.push(Class::public());

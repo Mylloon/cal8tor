@@ -17,6 +17,14 @@ pub struct Course {
 
     /// Number of time slots the course takes up in the timetable
     pub size: usize,
+
+    /// Datetime when the course start
+    /// Filled only when building for the ICS
+    pub dtstart: Option<chrono::DateTime<chrono::Utc>>,
+
+    /// Datetime when the course end
+    /// Filled only when building for the ICS
+    pub dtend: Option<chrono::DateTime<chrono::Utc>>,
 }
 #[derive(Debug)]
 pub struct Day {

@@ -1,7 +1,6 @@
-use scraper::{Html, Selector};
-
-use chrono_tz::Europe::Paris;
+use chrono::{TimeZone, Utc};
 use regex::Regex;
+use scraper::{Html, Selector};
 
 pub mod models;
 
@@ -82,6 +81,8 @@ pub async fn timetable(
                         Some(i) => i.parse().unwrap(),
                         None => 1,
                     },
+                    dtstart: None,
+                    dtend: None,
                 }));
 
                 match &courses_vec[courses_vec.len() - 1] {
@@ -193,19 +194,23 @@ fn check_consistency(schedules: &Vec<String>, timetable: &Vec<models::Day>) -> b
     checker
 }
 
+// Data builded in the timetable webpage
 type T = (
     // Schedules
     Vec<String>,
     // Timetable per days with the semester as the key
-    (usize, Vec<crate::timetable::models::Day>),
+    (usize, Vec<models::Day>),
 );
+// Data builded in the info webpage
 type D = std::collections::HashMap<
+    // Semester
     usize,
-    Vec<(chrono::DateTime<chrono::Utc>, chrono::DateTime<chrono::Utc>)>,
+    // List of start and end times of course weeks
+    Vec<(chrono::DateTime<Utc>, chrono::DateTime<Utc>)>,
 >;
 
 /// Build the timetable
-pub fn build(timetable: T, dates: D) -> Vec<String> {
+pub fn build(timetable: T, dates: D) -> Vec<models::Course> {
     let mut schedules = Vec::new();
     // h1 => heure de début | m1 => minute de début
     // h2 => heure de fin   | m2 => minute de fin
@@ -236,12 +241,17 @@ pub fn build(timetable: T, dates: D) -> Vec<String> {
     let semester = (timetable.1).0;
     let requested_timetable = (timetable.1).1;
 
-    let mut requested_dates = Vec::new();
-    for date in dates.get(&semester).unwrap() {
-        requested_dates.push((date.0.with_timezone(&Paris), date.1.with_timezone(&Paris)));
-    }
+    let _requested_dates = dates.get(&semester).unwrap();
 
-    println!("{:#?}", schedules);
+    println!("{:#?}", requested_timetable);
 
-    vec!["cc".to_string()]
+    vec![models::Course {
+        name: String::from("Cours"),
+        professor: None,
+        room: String::from("A188"),
+        start: 0,
+        size: 0,
+        dtstart: Some(Utc.ymd(2022, 9, 19).and_hms(13, 30, 0)),
+        dtend: Some(Utc.ymd(2022, 9, 19).and_hms(16, 30, 0)),
+    }]
 }

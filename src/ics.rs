@@ -8,22 +8,28 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &str) {
 
     // Create events which contains the information regarding the course
     for course in courses {
-        let mut event = Event::new("uid", "dtstamp");
+        let mut event = Event::new(uuid::Uuid::new_v4().to_string(), dt_ical(chrono::Utc::now()));
 
         // Public event
         event.push(Class::public());
+
         // Consume actual time
         event.push(Transp::opaque());
+
         // Professor's name
         if course.professor.is_some() {
             event.push(Description::new(course.professor.unwrap()));
         }
+
         // Start time of the course
         event.push(DtStart::new(dt_ical(course.dtstart.unwrap())));
+
         // End time of the course
         event.push(DtEnd::new(dt_ical(course.dtend.unwrap())));
+
         // Room location
         event.push(Location::new(course.room));
+
         // Course's name
         event.push(Summary::new(course.name));
 

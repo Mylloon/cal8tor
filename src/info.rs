@@ -1,8 +1,7 @@
-use std::collections::HashMap;
-
 use chrono::{DateTime, Duration, TimeZone, Utc};
 use regex::{Captures, Regex};
 use scraper::{Html, Selector};
+use std::collections::HashMap;
 
 pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, DateTime<Utc>)>> {
     let document = get_webpage().await.expect("Can't reach info website.");

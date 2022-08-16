@@ -3,7 +3,12 @@ use ics::{
     Event, ICalendar,
 };
 
-type T = Vec<crate::timetable::models::Day>;
+type T = (
+    // Schedules
+    Vec<String>,
+    // Timetable per days with the semester as the key
+    (usize, Vec<crate::timetable::models::Day>),
+);
 type D = std::collections::HashMap<
     usize,
     Vec<(chrono::DateTime<chrono::Utc>, chrono::DateTime<chrono::Utc>)>,
@@ -35,6 +40,8 @@ pub fn export(_timetable: T, _dates: D) -> ICalendar<'static> {
     calendar.add_event(event);
 
     calendar.save_file("target/debug2.ics").unwrap();
+
+    println!("{:#?} - {:#?}", _timetable, _dates);
 
     calendar
 }

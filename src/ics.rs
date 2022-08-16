@@ -1,10 +1,23 @@
+use chrono::TimeZone;
 use ics::{
+    parameters,
     properties::{Class, Description, DtEnd, DtStart, Location, Summary, Transp},
-    Event, ICalendar,
+    Event, ICalendar, Standard,
 };
 
 pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &str) {
     let mut calendar = ICalendar::new("2.0", "cal8tor");
+
+    // Add Europe/Paris timezone
+    let timezone_name = "Europe/Paris";
+    calendar.add_timezone(ics::TimeZone::standard(
+        timezone_name,
+        Standard::new(
+            dt_ical(chrono::Utc.ymd(1970, 1, 1).and_hms(0, 0, 0)),
+            "+0100",
+            "+0200",
+        ),
+    ));
 
     // Create events which contains the information regarding the course
     for course in courses {
@@ -25,10 +38,14 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &str) {
         }
 
         // Start time of the course
-        event.push(DtStart::new(dt_ical(course.dtstart.unwrap())));
+        let mut date_start = DtStart::new(dt_ical(course.dtstart.unwrap()));
+        date_start.append(parameters!("TZID" => timezone_name));
+        event.push(date_start);
 
         // End time of the course
-        event.push(DtEnd::new(dt_ical(course.dtend.unwrap())));
+        let mut date_end = DtEnd::new(dt_ical(course.dtend.unwrap()));
+        date_end.append(parameters!("TZID" => timezone_name));
+        event.push(date_end);
 
         // Room location
         event.push(Location::new(course.room));
@@ -46,5 +63,5 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &str) {
 /// Transform the datetime from chrono to the ICS format
 /// See <https://github.com/hummingly/ics/issues/17#issue-985662287>
 fn dt_ical(dt: chrono::DateTime<chrono::Utc>) -> String {
-    format!("{}", dt.format("%Y%m%dT%H%M%SZ"))
+    format!("{}", dt.format("%Y%m%dT%H%M%S"))
 }

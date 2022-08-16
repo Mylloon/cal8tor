@@ -15,7 +15,9 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &str) {
         // Consume actual time
         event.push(Transp::opaque());
         // Professor's name
-        event.push(Description::new(course.professor.unwrap_or_default()));
+        if course.professor.is_some() {
+            event.push(Description::new(course.professor.unwrap()));
+        }
         // Start time of the course
         event.push(DtStart::new(dt_ical(course.dtstart.unwrap())));
         // End time of the course

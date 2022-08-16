@@ -10,5 +10,5 @@ async fn main() {
 
     let builded_timetable = timetable::build(timetable, info);
 
-    ics::export(builded_timetable, "target/debug2.ics");
+    ics::export(builded_timetable, "target/debug.ics");
 }

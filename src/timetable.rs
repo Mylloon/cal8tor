@@ -111,7 +111,7 @@ async fn get_webpage(
     semester: i8,
     letter: Option<char>,
 ) -> Result<Html, Box<dyn std::error::Error>> {
-    /* let url = {
+    let url = {
         let panic_semester_message = "Unknown semester.";
         let panic_letter_message = "Unknown letter.";
 
@@ -153,14 +153,13 @@ async fn get_webpage(
     };
 
     // Get raw html
-    let html = reqwest::get(url).await?.text().await?;
+    let html = reqwest::get(&url).await?.text().await?;
+
+    // Panic on error
+    crate::utils::check_errors(&html, &url);
 
     // Parse document
-    let document = Html::parse_document(&html); */
-
-    println!("Fetch 'L{}{} (s{})'", year, letter.unwrap_or(' '), semester);
-    let html = include_str!("../target/debug.html");
-    let document = Html::parse_document(html);
+    let document = Html::parse_document(&html);
 
     Ok(document)
 }
@@ -242,8 +241,8 @@ pub fn build(timetable: T, dates: D) -> Vec<models::Course> {
     let mut semester = Vec::new();
 
     // Start date of the back-to-school week
-    let break_data = dates.get(&timetable.1 .0).unwrap();
-    let before_break = break_data.get(0).unwrap();
+    let datetimes = dates.get(&timetable.1 .0).unwrap();
+    let before_break = datetimes.get(0).unwrap();
     let mut date = before_break.0;
     let mut rep = before_break.1;
     // For each weeks
@@ -273,7 +272,7 @@ pub fn build(timetable: T, dates: D) -> Vec<models::Course> {
             // From friday to monday
             date += Duration::days(2);
         }
-        let after_break = break_data.get(1).unwrap();
+        let after_break = datetimes.get(1).unwrap();
         date = after_break.0;
         rep = after_break.1;
     }

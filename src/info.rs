@@ -59,12 +59,13 @@ pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, i64)>> {
 
 /// Get info webpage
 async fn get_webpage() -> Result<Html, Box<dyn std::error::Error>> {
-    /* let html = reqwest::get("https://informatique.up8.edu/licence-iv/edt").await?.text().await?;
+    let url = "https://informatique.up8.edu/licence-iv/edt";
+    let html = reqwest::get(url).await?.text().await?;
 
-    Ok(Html::parse_document(&html)) */
+    // Panic on error
+    crate::utils::check_errors(&html, url);
 
-    let html = include_str!("../target/debug2.html");
-    Ok(Html::parse_document(html))
+    Ok(Html::parse_document(&html))
 }
 
 /// Turn a french date to an english one

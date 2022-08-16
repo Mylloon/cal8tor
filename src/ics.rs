@@ -33,7 +33,7 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &str) {
 }
 
 /// Transform the datetime from chrono to the ICS format
-/// See https://github.com/hummingly/ics/issues/17#issue-985662287
+/// See <https://github.com/hummingly/ics/issues/17#issue-985662287>
 fn dt_ical(dt: chrono::DateTime<chrono::Utc>) -> String {
     format!("{}", dt.format("%Y%m%dT%H%M%SZ"))
 }

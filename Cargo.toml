@@ -12,6 +12,7 @@ scraper = "0.13.0"
 regex = "1"
 chrono = "0.4"
 ics = "0.5"
+clap = { version = "3.2", features = ["derive"] }
 
 [dependencies.uuid]
 version = "1.1.2"

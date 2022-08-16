@@ -1,9 +1,9 @@
-use chrono::{DateTime, Duration, TimeZone, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 use regex::{Captures, Regex};
 use scraper::{Html, Selector};
 use std::collections::HashMap;
 
-pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, DateTime<Utc>)>> {
+pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, i64)>> {
     let document = get_webpage().await.expect("Can't reach info website.");
 
     // Selectors
@@ -31,10 +31,8 @@ pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, DateTime<Utc>)>> {
                     let start_date = get_date(captures.name("d").unwrap().as_str());
 
                     let rep: i64 = captures.name("r").unwrap().as_str().parse().unwrap();
-                    // -1 car la première semaine est déjà compté
-                    let end_date = start_date + Duration::weeks(rep - 1);
 
-                    data.insert(i + 1, vec![(start_date, end_date)]);
+                    data.insert(i + 1, vec![(start_date, rep)]);
                 }
                 e if e.starts_with("Reprise") => {
                     let captures = re.captures(&e).unwrap();
@@ -43,13 +41,11 @@ pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, DateTime<Utc>)>> {
                     let start_date = get_date(captures.name("d").unwrap().as_str());
 
                     let rep: i64 = captures.name("r").unwrap().as_str().parse().unwrap();
-                    // -1 car la première semaine est déjà compté
-                    let end_date = start_date + Duration::weeks(rep - 1);
 
                     let it = i + 1;
 
                     let mut vec = data.get(&it).unwrap().to_owned();
-                    vec.push((start_date, end_date));
+                    vec.push((start_date, rep));
 
                     data.insert(it, vec);
                 }

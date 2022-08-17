@@ -7,9 +7,11 @@ pub mod models;
 /// Fetch the timetable for a class
 pub async fn timetable(
     year: i8,
-    semester: i8,
+    semester_opt: Option<i8>,
     letter: Option<char>,
 ) -> (Vec<String>, (usize, Vec<models::Day>)) {
+    let semester = get_semester(semester_opt, letter);
+
     let document = get_webpage(year, semester, letter)
         .await
         .expect("Can't reach timetable website.");
@@ -123,7 +125,7 @@ async fn get_webpage(
                     2 => ['x', 'y', 'z'],
                     _ => panic!("{}", panic_semester_message),
                 };
-                let c = letter.expect(panic_letter_message);
+                let c = letter.expect(panic_letter_message).to_ascii_lowercase();
                 if allow_letters.contains(&c) {
                     format!("{}/l1-{}.html", base_url, c)
                 } else {
@@ -136,7 +138,7 @@ async fn get_webpage(
                     2 => ['x', 'y'],
                     _ => panic!("{}", panic_semester_message),
                 };
-                let c = letter.expect(panic_letter_message);
+                let c = letter.expect(panic_letter_message).to_ascii_lowercase();
                 if allow_letters.contains(&c) {
                     format!("{}/l2-{}.html", base_url, c)
                 } else {
@@ -278,4 +280,10 @@ pub fn build(timetable: T, dates: D) -> Vec<models::Course> {
     }
 
     semester
+}
+
+/// Get the current semester depending on the letter or the current date
+fn get_semester(_semester: Option<i8>, _letter: Option<char>) -> i8 {
+    // TODO
+    1
 }

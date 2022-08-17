@@ -13,6 +13,10 @@ struct Args {
     #[clap(value_parser)]
     class: String,
 
+    /// The semester you want (useful only in 3rd year)
+    #[clap(short, long, value_parser)]
+    semester: Option<i8>,
+
     /// Export to iCalendar format (.ics)
     #[clap(short, long, action = ArgAction::SetTrue, default_value_t = false)]
     export: bool,
@@ -42,7 +46,7 @@ async fn main() {
         year,
         letter.unwrap_or_default()
     );
-    let timetable = timetable::timetable(year, 1, letter).await;
+    let timetable = timetable::timetable(year, args.semester, letter).await;
 
     println!("Fetch informations about the year...");
     let info = info::info().await;

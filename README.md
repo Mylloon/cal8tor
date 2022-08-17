@@ -10,7 +10,7 @@ $ git clone https://git.kennel.ml/Anri/cal8tor.git && cd cal8tor
 ```
 2. Build the app and get in the output folder
 ```bash
-$ cargo build --release  && cd target/release/
+$ cargo build --release && cd target/release/
 ```
 3. Run the app, here the help page will be displayed
 ```

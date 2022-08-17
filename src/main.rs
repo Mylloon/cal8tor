@@ -1,4 +1,4 @@
-use clap::{Parser};
+use clap::Parser;
 use regex::Regex;
 
 mod ics;
@@ -9,16 +9,16 @@ mod utils;
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
 struct Args {
-    /// The class you want to get the timetable
+    /// The class you want to get the timetable, i.e.: L2-A
     #[clap(value_parser)]
     class: String,
 
-    /// The semester you want (useful only in 3rd year)
-    #[clap(short, long, value_parser)]
+    /// The semester you want (useful only in 3rd year, 1-2 use letter in class)
+    #[clap(short, long, value_parser, value_name = "SEMESTER NUMBER")]
     semester: Option<i8>,
 
     /// Export to iCalendar format (.ics)
-    #[clap(short, long)]
+    #[clap(short, long, value_name = "FILE NAME")]
     export: Option<String>,
 }
 
@@ -53,10 +53,12 @@ async fn main() {
 
     if args.export.is_some() {
         // Export the calendar
-        println!("Build the ICS file...");
-        let builded_timetable = timetable::build(timetable, info);
 
-        ics::export(builded_timetable, &args.export.unwrap());
+        let filename = args.export.unwrap();
+        println!("Build the ICS file at {}...", filename);
+
+        let builded_timetable = timetable::build(timetable, info);
+        ics::export(builded_timetable, &filename);
     } else {
         // Show the calendar
         println!("Displaying...")

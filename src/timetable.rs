@@ -320,3 +320,8 @@ fn get_semester(semester: Option<i8>, letter: Option<char>) -> i8 {
         },
     }
 }
+
+/// Display the timetable
+pub fn display() {
+    todo!("WIP")
+}

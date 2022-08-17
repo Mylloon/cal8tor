@@ -5,7 +5,7 @@ use ics::{
     Event, ICalendar, Standard,
 };
 
-pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &str) {
+pub fn export(courses: Vec<crate::timetable::models::Course>, filename: String) {
     let mut calendar = ICalendar::new("2.0", "cal8tor");
 
     // Add Europe/Paris timezone
@@ -58,7 +58,7 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &str) {
     }
 
     calendar
-        .save_file(match filename.to_string() {
+        .save_file(match filename {
             x if x.ends_with(".ics") => x,
             x => format!("{}.ics", x),
         })

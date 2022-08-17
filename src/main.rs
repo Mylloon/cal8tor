@@ -53,14 +53,14 @@ async fn main() {
 
     if args.export.is_some() {
         // Export the calendar
-
         let filename = args.export.unwrap();
         println!("Build the ICS file at {}...", filename);
 
         let builded_timetable = timetable::build(timetable, info);
-        ics::export(builded_timetable, &filename);
+        ics::export(builded_timetable, filename);
     } else {
         // Show the calendar
-        println!("Displaying...")
+        println!("Displaying...");
+        timetable::display();
     }
 }

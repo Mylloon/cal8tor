@@ -52,7 +52,10 @@ pub async fn timetable(
                 location_tracker += 1;
             } else {
                 courses_vec.push(Some(models::Course {
-                    name: course.select(&sel_em).next().unwrap().inner_html(),
+                    name: match course.select(&sel_em).next() {
+                        Some(value) => value.inner_html(),
+                        None => course.inner_html().split("<br>").next().unwrap().to_string(),
+                    },
                     professor: match course
                         .select(&sel_small)
                         .next()

@@ -1,4 +1,4 @@
-use clap::{ArgAction, Parser};
+use clap::{Parser};
 use regex::Regex;
 
 mod ics;
@@ -18,8 +18,8 @@ struct Args {
     semester: Option<i8>,
 
     /// Export to iCalendar format (.ics)
-    #[clap(short, long, action = ArgAction::SetTrue, default_value_t = false)]
-    export: bool,
+    #[clap(short, long)]
+    export: Option<String>,
 }
 
 #[tokio::main]
@@ -51,8 +51,14 @@ async fn main() {
     println!("Fetch informations about the year...");
     let info = info::info().await;
 
-    println!("Build the ICS file...");
-    let builded_timetable = timetable::build(timetable, info);
+    if args.export.is_some() {
+        // Export the calendar
+        println!("Build the ICS file...");
+        let builded_timetable = timetable::build(timetable, info);
 
-    ics::export(builded_timetable, "target/debug.ics");
+        ics::export(builded_timetable, &args.export.unwrap());
+    } else {
+        // Show the calendar
+        println!("Displaying...")
+    }
 }

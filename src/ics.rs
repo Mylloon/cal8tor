@@ -57,7 +57,12 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &str) {
         calendar.add_event(event);
     }
 
-    calendar.save_file(filename).unwrap();
+    calendar
+        .save_file(match filename.to_string() {
+            x if x.ends_with(".ics") => x,
+            x => format!("{}.ics", x),
+        })
+        .unwrap();
 }
 
 /// Transform the datetime from chrono to the ICS format

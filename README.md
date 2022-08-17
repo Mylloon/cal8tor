@@ -3,7 +3,7 @@ Extractor of the calendar of the IT degree of university Paris 8.
 
 ## Build and run
 You will need Rust installed to compile the program.
-<details><summary>You also need `OpenSSL` installed.</summary>
+<details><summary>You also need <code>OpenSSL</code> installed.</summary>
 
 - Ubuntu: `sudo apt install libssl-dev`
 - Fedora: `dnf install openssl-devel`

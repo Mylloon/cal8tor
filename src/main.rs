@@ -26,7 +26,7 @@ struct Args {
 async fn main() {
     let args = Args::parse();
 
-    let matches = Regex::new(r"[Ll](?P<year>\d)-?(?P<letter>.)?")
+    let matches = Regex::new(r"[Ll](?P<year>\d)[-–•·]?(?P<letter>.)?")
         .unwrap()
         .captures(&args.class)
         .unwrap();

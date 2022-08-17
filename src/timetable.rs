@@ -1,6 +1,7 @@
 use chrono::{Datelike, Duration, TimeZone, Utc};
 use regex::Regex;
 use scraper::{Html, Selector};
+use tabled::{Table, Style};
 pub mod models;
 
 /// Fetch the timetable for a class
@@ -322,5 +323,5 @@ fn get_semester(semester: Option<i8>, letter: Option<char>) -> i8 {
 
 /// Display the timetable
 pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
-    println!("{:#?}", timetable);
+    println!("{}", Table::new(timetable.1 .1).with(Style::modern()).to_string());
 }

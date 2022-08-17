@@ -1,4 +1,4 @@
-# cal8tor • **cal**endar P**8** extrac**tor**
+# cal8tor • ***cal***endar P***8*** extrac***tor***
 Extractor of the calendar of the IT degree of university Paris 8.
 
 ## Build and run
@@ -17,7 +17,7 @@ $ cargo build --release  && cd target/release/
 $ ./cal8tor --help
 ```
 
-## **WIP:** See the calendar in your terminal
+## ***WIP:*** See the calendar in your terminal
 For the L2-X, run:
 ```bash
 $ ./cal8tor l2-X

@@ -61,6 +61,6 @@ async fn main() {
     } else {
         // Show the calendar
         println!("Displaying...");
-        timetable::display();
+        timetable::display(timetable);
     }
 }

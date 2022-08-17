@@ -13,3 +13,11 @@ pub fn check_errors(html: &String, loc: &str) {
 fn err_code(code: i32) -> String {
     format!("HTTP Code : {}", code)
 }
+
+/// Return the string if exists, otherwise return empty string
+pub fn display_option(o: &Option<String>) -> String {
+    match o {
+        Some(s) => s.to_string(),
+        None => String::new(),
+    }
+}

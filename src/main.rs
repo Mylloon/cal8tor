@@ -1,4 +1,5 @@
-use clap::Parser;
+use clap::{ArgAction, Parser};
+use regex::Regex;
 
 mod ics;
 mod info;
@@ -8,23 +9,40 @@ mod utils;
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
 struct Args {
-    /// Class
-    #[clap(short, long, value_parser)]
-    class: i8,
+    /// The class you want to get the timetable
+    #[clap(value_parser)]
+    class: String,
 
-    /// Subgroup if you have one, for example in `L1-A`, specify here the `A`
-    #[clap(short, long, value_parser)]
-    letter: Option<char>,
+    /// Export to iCalendar format (.ics)
+    #[clap(short, long, action = ArgAction::SetTrue, default_value_t = false)]
+    export: bool,
 }
 
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
 
-    println!("class: L{}{}", args.class, args.letter.unwrap_or_default());
+    let matches = Regex::new(r"[Ll](?P<year>\d)-?(?P<letter>.)?")
+        .unwrap()
+        .captures(&args.class)
+        .unwrap();
 
-    /* println!("Fetch the timetable...");
-    let timetable = timetable::timetable(3, 1, None).await;
+    let year = matches
+        .name("year")
+        .unwrap()
+        .as_str()
+        .parse::<i8>()
+        .unwrap();
+    let letter = matches
+        .name("letter")
+        .map(|c| c.as_str().chars().next().expect("Error in letter"));
+
+    println!(
+        "Fetch the timetable for L{}{}...",
+        year,
+        letter.unwrap_or_default()
+    );
+    let timetable = timetable::timetable(year, 1, letter).await;
 
     println!("Fetch informations about the year...");
     let info = info::info().await;
@@ -32,5 +50,5 @@ async fn main() {
     println!("Build the ICS file...");
     let builded_timetable = timetable::build(timetable, info);
 
-    ics::export(builded_timetable, "target/debug.ics"); */
+    ics::export(builded_timetable, "target/debug.ics");
 }

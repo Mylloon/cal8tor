@@ -54,7 +54,12 @@ pub async fn timetable(
                 courses_vec.push(Some(models::Course {
                     name: match course.select(&sel_em).next() {
                         Some(value) => value.inner_html(),
-                        None => course.inner_html().split("<br>").next().unwrap().to_string(),
+                        None => course
+                            .inner_html()
+                            .split("<br>")
+                            .next()
+                            .unwrap()
+                            .to_string(),
                     },
                     professor: match course
                         .select(&sel_small)
@@ -286,7 +291,32 @@ pub fn build(timetable: T, dates: D) -> Vec<models::Course> {
 }
 
 /// Get the current semester depending on the letter or the current date
-fn get_semester(_semester: Option<i8>, _letter: Option<char>) -> i8 {
-    // TODO
-    1
+fn get_semester(semester: Option<i8>, letter: Option<char>) -> i8 {
+    match semester {
+        // Force the asked semester
+        Some(n) => n,
+        // Find the potential semester
+        None => match letter {
+            // Based on letter (kinda accurate)
+            Some(c) => {
+                if c as i8 > 77 {
+                    // If letter is N or after
+                    2
+                } else {
+                    // If letter is before N
+                    1
+                }
+            }
+            // Based on the time (kinda less accurate)
+            None => {
+                if Utc::now().month() > 6 {
+                    // From july to december
+                    1
+                } else {
+                    // from january to june
+                    2
+                }
+            }
+        },
+    }
 }

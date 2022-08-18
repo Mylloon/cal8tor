@@ -13,7 +13,8 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: String) 
     calendar.add_timezone(ics::TimeZone::standard(
         timezone_name,
         Standard::new(
-            dt_ical(chrono::Utc.ymd(1970, 1, 1).and_hms(0, 0, 0)),
+            // Add a Z because it's UTC
+            dt_ical(chrono::Utc.ymd(1970, 1, 1).and_hms(0, 0, 0)) + "Z",
             "+0100",
             "+0200",
         ),
@@ -23,7 +24,8 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: String) 
     for course in courses {
         let mut event = Event::new(
             uuid::Uuid::new_v4().to_string(),
-            dt_ical(chrono::Utc::now()),
+            // Add a Z because it's UTC
+            dt_ical(chrono::Utc::now()) + "Z",
         );
 
         // Public event
@@ -51,7 +53,9 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: String) 
         event.push(Location::new(course.room));
 
         // Course's name
-        event.push(Summary::new(course.name));
+        let mut course_name = Summary::new(course.name);
+        course_name.append(parameters!("LANGUAGE" => "fr"));
+        event.push(course_name);
 
         // Add the course to the calendar
         calendar.add_event(event);

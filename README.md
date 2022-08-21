@@ -1,6 +1,8 @@
 # cal8tor • ***cal***endar P***8*** extrac***tor***
 Extractor of the calendar of the IT degree of university Paris 8.
 
+[![dependency status](https://deps.rs/repo/gitea/git.kennel.ml/Anri/cal8tor/status.svg)](https://deps.rs/repo/gitea/git.kennel.ml/Anri/cal8tor)
+
 ## Build and run
 You will need Rust installed to compile the program.
 <details><summary>You also need <code>OpenSSL</code> installed.</summary>

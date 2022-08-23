@@ -1,44 +1,48 @@
 # cal8tor • ***cal***endar P***8*** extrac***tor***
-Extractor of the calendar of the IT degree of university Paris 8.
+Extracteur d'emploi du temps pour la licence d'informatique de Paris 8
 
 [![dependency status](https://deps.rs/repo/gitea/git.kennel.ml/Anri/cal8tor/status.svg)](https://deps.rs/repo/gitea/git.kennel.ml/Anri/cal8tor)
 
-## Build and run
-You will need Rust installed to compile the program.
-<details><summary>You also need <code>OpenSSL</code> installed.</summary>
+## Compiler et installer
+Vous aurez besoin de Rust pour compiler le programme.
+<details><summary>Vous avez aussi besoin d'<code>OpenSSL</code>.</summary>
 
 - Ubuntu: `sudo apt install libssl-dev`
 - Fedora: `dnf install openssl-devel`
 </details>
 
-1. Clone the repo and get in
+1. Clone le dépôt et s'y rendre
 ```bash
 $ git clone https://git.kennel.ml/Anri/cal8tor.git && cd cal8tor
 ```
-2. Build the app and get in the output folder
+2. Compiler et installer l'application
 ```bash
-$ cargo build --release && cd target/release/
+$ cargo install --path .
 ```
-3. Run the app, here the help page will be displayed
+3. Tu peux maintenant supprimer le dossier `cal8tor` !
+
+## Lancer
+Pour afficher la page d'aide
 ```
-$ ./cal8tor --help
+$ cal8tor --help
 ```
 
-## See the calendar in your terminal
-For the L2-X, run:
+## Voir le calendrier dans le terminal
+Pour les L2-X par exemple, lance :
 ```bash
-$ ./cal8tor l2-X
+$ cal8tor l2-X
 ```
-> The rendering can sometimes be unreadable and/or hard to read.
+> Le rendu peut parfois être difficile à lire, n'hésites pas à utiliser l'option
+> `-c` (ou `--cl`) pour ajuster la longueur des cellules du planning.
 
-## Export the calendar in .ics format
-For the L1-A, run:
+## Exporter le calendrier au format `.ics`
+Pour les L1-A par exemple, lance :
 ```bash
-$ ./cal8tor L1A --export calendar.ics
+$ cal8tor L1A --export calendar.ics
 ```
 
-> The file include the timezone for `Europe/Paris` and is in
-compliance with [this validator tool](https://icalendar.org/validator.html).
+> Le fichier comprend le fuseau horaire pour `Europe/Paris` et est
+> conforme à [cet outil de validation](https://icalendar.org/validator.html).
 
 ---
-Please open a PR if you want to improve the project!
+N'hésite pas à faire un PR pour améliorer le projet !

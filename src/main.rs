@@ -48,27 +48,27 @@ async fn main() {
     };
 
     println!(
-        "Fetch the timetable for L{}{}{}...",
+        "Récupération de l'emploi du temps des L{}{}{}...",
         year,
         seperator,
         letter.unwrap_or_default().to_uppercase()
     );
     let timetable = timetable::timetable(year, args.semester, letter).await;
 
-    println!("Fetch informations about the year...");
+    println!("Récupération des informations par rapport à l'année...");
     let info = info::info().await;
 
     if args.export.is_some() {
         // Export the calendar
         let filename = args.export.unwrap();
-        println!("Build the ICS file at {}...", filename);
+        println!("Fichier .ICS construit et exporté ici : {}...", filename);
 
         let builded_timetable = timetable::build(timetable, info);
         ics::export(builded_timetable, filename);
     } else {
         // Show the calendar
-        println!("Displaying...");
+        println!("Affichage...");
         timetable::display(timetable);
-        println!("You may need to turn your terminal emulator in fullscreen if it's not already the case.");
+        println!("Vous devrez peut-être mettre votre terminal en plein écran si ce n'est pas déjà le cas.");
     }
 }

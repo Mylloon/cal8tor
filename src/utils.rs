@@ -58,8 +58,13 @@ pub fn line_table(
         .to_string()
         .repeat(cell_length_hours);
 
-    // Print the line
-    print!("\n{}{}{}", ls, line_h, ms);
+    // Hours column
+    match skip_with.get(&0) {
+        Some(_) => print!("\n{}{}{}", ls, line_h, rs_bbc),
+        None => print!("\n{}{}{}", ls, line_h, ms),
+    };
+
+    // Courses columns
     for i in 0..number_cell - 2 {
         // Check if it's a big cell
         match skip_with.get(&i) {

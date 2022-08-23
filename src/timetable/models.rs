@@ -1,4 +1,4 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct Course {
     /// Course's name
     pub name: String,
@@ -27,7 +27,6 @@ pub struct Course {
     pub dtend: Option<chrono::DateTime<chrono::Utc>>,
 }
 
-#[derive(Debug)]
 pub struct Day {
     /// Day's name
     pub name: String,

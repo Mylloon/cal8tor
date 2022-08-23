@@ -127,7 +127,7 @@ async fn get_webpage(
     semester: i8,
     letter: Option<char>,
 ) -> Result<Html, Box<dyn std::error::Error>> {
-    /* let url = {
+    let url = {
         let panic_semester_message = "Unknown semester.";
         let panic_letter_message = "Unknown letter.";
 
@@ -172,8 +172,7 @@ async fn get_webpage(
     let html = reqwest::get(&url).await?.text().await?;
 
     // Panic on error
-    crate::utils::check_errors(&html, &url); */
-    let html = std::fs::read_to_string("target/debug-l1a.htm").unwrap();
+    crate::utils::check_errors(&html, &url);
 
     // Parse document
     let document = Html::parse_document(&html);
@@ -306,7 +305,7 @@ fn get_semester(semester: Option<i8>, letter: Option<char>) -> i8 {
         None => match letter {
             // Based on letter (kinda accurate)
             Some(c) => {
-                if c as i8 > 77 {
+                if c.to_ascii_uppercase() as i8 > 77 {
                     // If letter is N or after
                     2
                 } else {

@@ -59,7 +59,7 @@ pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, i64)>> {
 
 /// Get info webpage
 async fn get_webpage() -> Result<Html, Box<dyn std::error::Error>> {
-    /* let url = "https://informatique.up8.edu/licence-iv/edt";
+    let url = "https://informatique.up8.edu/licence-iv/edt";
 
     // We don't use reqwest::get() but a client with a custom user-agent
     // in order to avoid getting rate limit
@@ -69,9 +69,7 @@ async fn get_webpage() -> Result<Html, Box<dyn std::error::Error>> {
     let html = client.get(url).send().await?.text().await?;
 
     // Panic on error
-    crate::utils::check_errors(&html, url); */
-
-    let html = std::fs::read_to_string("target/debug-sch.htm").unwrap();
+    crate::utils::check_errors(&html, url);
 
     Ok(Html::parse_document(&html))
 }

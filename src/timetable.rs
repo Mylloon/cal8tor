@@ -1,6 +1,13 @@
 use chrono::{Datelike, Duration, TimeZone, Utc};
 use regex::Regex;
 use scraper::{Html, Selector};
+use std::collections::HashMap;
+
+use crate::utils::{
+    self,
+    models::{Position, TabChar},
+};
+
 pub mod models;
 
 /// Fetch the timetable for a class
@@ -120,7 +127,7 @@ async fn get_webpage(
     semester: i8,
     letter: Option<char>,
 ) -> Result<Html, Box<dyn std::error::Error>> {
-    let url = {
+    /* let url = {
         let panic_semester_message = "Unknown semester.";
         let panic_letter_message = "Unknown letter.";
 
@@ -165,7 +172,8 @@ async fn get_webpage(
     let html = reqwest::get(&url).await?.text().await?;
 
     // Panic on error
-    crate::utils::check_errors(&html, &url);
+    crate::utils::check_errors(&html, &url); */
+    let html = std::fs::read_to_string("target/debug-l1a.htm").unwrap();
 
     // Parse document
     let document = Html::parse_document(&html);
@@ -210,7 +218,7 @@ type T = (
     (usize, Vec<models::Day>),
 );
 // Data builded in the info webpage
-type D = std::collections::HashMap<
+type D = HashMap<
     // Semester
     usize,
     // List of start and repetition of course weeks
@@ -321,4 +329,78 @@ fn get_semester(semester: Option<i8>, letter: Option<char>) -> i8 {
 }
 
 /// Display the timetable
-pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {}
+pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
+    // Cell length
+    let cl = 35;
+    // Cell length for hours
+    let clh = 11;
+    // Cell number
+    let cn = 6;
+
+    let sep = TabChar::Bv.val();
+
+    // Top of the tab
+    utils::line_table(clh, cl, cn, Position::Top, HashMap::new());
+
+    // First empty case
+    print!("{}{:^clh$}{}", sep, "", sep);
+
+    // Print day's of the week
+    let mut days = HashMap::new();
+    for (i, data) in (&timetable.1 .1).iter().enumerate() {
+        days.insert(i, &data.name);
+        print!("{:^cl$}{}", &data.name, sep);
+    }
+
+    // Store the data of the course for utils::line_table
+    let mut next_skip = HashMap::new();
+    // For each hours
+    for (i, hour) in timetable.0.into_iter().enumerate() {
+        // Draw separator line
+        utils::line_table(clh, cl, cn, Position::Middle, next_skip);
+
+        // Reset
+        next_skip = HashMap::new();
+
+        // Print hour
+        print!("{}{:^clh$}", sep, hour);
+
+        // For all the days
+        for (j, day) in (&timetable.1 .1).iter().enumerate() {
+            // For all the courses of each days
+            for (k, course_opt) in (&day.courses).iter().enumerate() {
+                match course_opt {
+                    // If there is a course
+                    Some(course) => {
+                        // Check if the course's hour
+                        if i == k {
+                            if course.size != 1 {
+                                // If the course uses more than one time slot
+                                next_skip.insert(course.start, &course.name);
+                                print!("{}{:^cl$}", sep, "");
+                                break;
+                            } else {
+                                // Else simply print the course
+                                print!("{}{:^cl$}", sep, &course.name);
+                                break;
+                            }
+                        }
+                    }
+                    // If no course was found
+                    None => {
+                        // Verify the "no course" is in the correct day and hour
+                        if *days.get(&j).unwrap() == &day.name.to_string() && k == i {
+                            // If yes print empty row
+                            print!("{}{:^cl$}", sep, "");
+                            break;
+                        }
+                        // Else it was a course of another day/time
+                    }
+                };
+            }
+        }
+        print!("{}", sep);
+    }
+    // Bottom of the table
+    utils::line_table(clh, cl, cn, Position::Bottom, HashMap::new());
+}

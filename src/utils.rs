@@ -17,7 +17,7 @@ fn err_code(code: i32) -> String {
 }
 
 /// Print a line for the table
-pub fn line_table(cell_length: usize, number_cell: usize, pos: models::Position) {
+pub fn line_table(cell_length: usize, number_cell: usize, pos: models::Position, skip_with: std::collections::HashMap<usize, &str>) {
     let err_msg = "Unknown position";
 
     // Left side
@@ -48,8 +48,11 @@ pub fn line_table(cell_length: usize, number_cell: usize, pos: models::Position)
 
     // Print the line
     print!("\n{}{}{}", ls, line, ms);
-    for _ in 2..number_cell {
-        print!("{}{}", line, ms);
+    for i in 0..number_cell - 2 {
+        match skip_with.get(&i) {
+            Some(text) => print!("{:^cell_length$}{}", text, ms),
+            None => print!("{}{}", line, ms),
+        }
     }
     println!("{}{}", line, rs);
 }

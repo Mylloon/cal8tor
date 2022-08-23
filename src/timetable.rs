@@ -181,7 +181,7 @@ async fn get_webpage(
 }
 
 /// Check if the timetable is well built
-fn check_consistency(schedules: &Vec<String>, timetable: &Vec<models::Day>) -> bool {
+fn check_consistency(schedules: &[String], timetable: &Vec<models::Day>) -> bool {
     let mut checker = true;
     for day in timetable {
         let mut i = 0;

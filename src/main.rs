@@ -20,6 +20,10 @@ struct Args {
     /// Export to iCalendar format (.ics)
     #[clap(short, long, value_name = "FILE NAME")]
     export: Option<String>,
+
+    /// Size of cell of the timetable (irrelevant when exporting the timetable)
+    #[clap(short, long, value_name = "CELL LENGTH", default_value_t = 35)]
+    cl: usize,
 }
 
 #[tokio::main]
@@ -68,7 +72,7 @@ async fn main() {
     } else {
         // Show the calendar
         println!("Affichage...");
-        timetable::display(timetable);
+        timetable::display(timetable, args.cl);
         println!("Vous devrez peut-être mettre votre terminal en plein écran si ce n'est pas déjà le cas.");
     }
 }

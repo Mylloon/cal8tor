@@ -328,20 +328,18 @@ fn get_semester(semester: Option<i8>, letter: Option<char>) -> i8 {
 }
 
 /// Display the timetable
-pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
-    // Cell length
-    let cl = 35;
+pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>)), cell_length: usize) {
     // Cell length for hours
     let clh = 11;
     // Cell number
     let cn = 6;
     // 3/4 of cell length
-    let quarter = (3 * cl) / 4;
+    let quarter = (3 * cell_length) / 4;
 
     let sep = TabChar::Bv.val();
 
     // Top of the tab
-    utils::line_table(clh, cl, cn, Position::Top, HashMap::new());
+    utils::line_table(clh, cell_length, cn, Position::Top, HashMap::new());
 
     // First empty case
     print!("{}{:^clh$}{}", sep, "", sep);
@@ -350,7 +348,7 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
     let mut days = HashMap::new();
     for (i, data) in (&timetable.1 .1).iter().enumerate() {
         days.insert(i, &data.name);
-        print!("{:^cl$}{}", &data.name, sep);
+        print!("{:^cell_length$}{}", &data.name, sep);
     }
 
     // Store the data of the course for utils::line_table
@@ -358,7 +356,7 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
     // For each hours -- i the hour's number
     for (i, hour) in timetable.0.into_iter().enumerate() {
         // Draw separator line
-        utils::line_table(clh, cl, cn, Position::Middle, next_skip);
+        utils::line_table(clh, cell_length, cn, Position::Middle, next_skip);
 
         // Reset
         next_skip = HashMap::new();
@@ -384,10 +382,10 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
                                 if course.name.len() > quarter {
                                     let data = utils::split_half(&course.name);
                                     next_skip.insert(j, data.1.trim());
-                                    print!("{}{:^cl$}", sep, data.0.trim());
+                                    print!("{}{:^cell_length$}", sep, data.0.trim());
                                 } else {
                                     next_skip.insert(j, &course.name);
-                                    print!("{}{:^cl$}", sep, "");
+                                    print!("{}{:^cell_length$}", sep, "");
                                 }
                                 info_slot = true;
                                 break;
@@ -395,9 +393,9 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
                                 // Else simply print the course
                                 // If the data is too long
                                 if course.name.len() > quarter {
-                                    print!("{}{:^cl$}", sep, utils::etc_str(&course.name));
+                                    print!("{}{:^cell_length$}", sep, utils::etc_str(&course.name));
                                 } else {
-                                    print!("{}{:^cl$}", sep, &course.name);
+                                    print!("{}{:^cell_length$}", sep, &course.name);
                                 }
                                 info_slot = true;
                                 break;
@@ -409,7 +407,7 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
                         // Verify the "no course" is in the correct day and hour
                         if *days.get(&j).unwrap() == &day.name.to_string() && k == i {
                             // If yes print empty row because there is no course
-                            print!("{}{:^cl$}", sep, "");
+                            print!("{}{:^cell_length$}", sep, "");
                             info_slot = true;
                             break;
                         }
@@ -420,11 +418,11 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
             if !info_slot {
                 // We found nothing about the slot because the precedent course
                 // takes more place than one slot
-                print!("{}{:^cl$}", sep, "");
+                print!("{}{:^cell_length$}", sep, "");
             }
         }
         print!("{}", sep);
     }
     // Bottom of the table
-    utils::line_table(clh, cl, cn, Position::Bottom, HashMap::new());
+    utils::line_table(clh, cell_length, cn, Position::Bottom, HashMap::new());
 }

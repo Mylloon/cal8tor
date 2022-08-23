@@ -367,21 +367,25 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
 
         // For all the days
         for (j, day) in (&timetable.1 .1).iter().enumerate() {
+            // True if we found something about the slot we are looking for
+            let mut info_slot = false;
             // For all the courses of each days
             for (k, course_opt) in (&day.courses).iter().enumerate() {
                 match course_opt {
                     // If there is a course
                     Some(course) => {
-                        // Check if the course's hour
+                        // Check the course's hour
                         if i == k {
-                            if course.size != 1 {
+                            if course.size > 1 {
                                 // If the course uses more than one time slot
                                 next_skip.insert(course.start, &course.name);
                                 print!("{}{:^cl$}", sep, "");
+                                info_slot = true;
                                 break;
                             } else {
                                 // Else simply print the course
                                 print!("{}{:^cl$}", sep, &course.name);
+                                info_slot = true;
                                 break;
                             }
                         }
@@ -390,13 +394,18 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
                     None => {
                         // Verify the "no course" is in the correct day and hour
                         if *days.get(&j).unwrap() == &day.name.to_string() && k == i {
-                            // If yes print empty row
+                            // If yes print empty row because there is no course
                             print!("{}{:^cl$}", sep, "");
+                            info_slot = true;
                             break;
                         }
                         // Else it was a course of another day/time
                     }
                 };
+            }
+            if !info_slot {
+                // We found nothing about the slot because the precedent course
+                // takes more place than one slot
             }
         }
         print!("{}", sep);

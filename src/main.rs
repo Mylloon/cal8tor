@@ -41,9 +41,16 @@ async fn main() {
         .name("letter")
         .map(|c| c.as_str().chars().next().expect("Error in letter"));
 
+    // Show a separator only if we need one
+    let seperator = match letter {
+        Some(_) => "-",
+        None => "",
+    };
+
     println!(
-        "Fetch the timetable for L{}{}...",
+        "Fetch the timetable for L{}{}{}...",
         year,
+        seperator,
         letter.unwrap_or_default()
     );
     let timetable = timetable::timetable(year, args.semester, letter).await;

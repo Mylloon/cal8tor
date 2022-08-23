@@ -17,11 +17,6 @@ fn err_code(code: i32) -> String {
 }
 
 /// Print a line for the table
-///
-/// `pos` defines what separator should be used and can be:
-/// - 0 -> top of the table
-/// - 1 -> middle of the table
-/// - 2 -> bottom of the table
 pub fn line_table(cell_length: usize, number_cell: usize, pos: models::Position) {
     let err_msg = "Unknown position";
 

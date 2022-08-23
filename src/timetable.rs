@@ -383,8 +383,8 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
                                 // If the data is too long
                                 if course.name.len() > quarter {
                                     let data = utils::split_half(&course.name);
-                                    next_skip.insert(j, data.1);
-                                    print!("{}{:^cl$}", sep, data.0);
+                                    next_skip.insert(j, data.1.trim());
+                                    print!("{}{:^cl$}", sep, data.0.trim());
                                 } else {
                                     next_skip.insert(j, &course.name);
                                     print!("{}{:^cl$}", sep, "");

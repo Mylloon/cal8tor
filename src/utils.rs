@@ -98,5 +98,5 @@ pub fn split_half(text: &str) -> (&str, &str) {
 
 // Reduce size of string by adding etc. to it, and cutting some info
 pub fn etc_str(text: &str) -> String {
-    format!("{}...", split_half(text).0)
+    format!("{}...", split_half(text).0.trim())
 }

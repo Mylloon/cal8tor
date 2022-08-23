@@ -17,7 +17,13 @@ fn err_code(code: i32) -> String {
 }
 
 /// Print a line for the table
-pub fn line_table(cell_length: usize, number_cell: usize, pos: models::Position, skip_with: std::collections::HashMap<usize, &str>) {
+pub fn line_table(
+    cell_length_hours: usize,
+    cell_length: usize,
+    number_cell: usize,
+    pos: models::Position,
+    skip_with: std::collections::HashMap<usize, &str>,
+) {
     // Left side
     let ls = match pos {
         models::Position::Top => models::TabChar::Jtl.val(),
@@ -39,14 +45,34 @@ pub fn line_table(cell_length: usize, number_cell: usize, pos: models::Position,
         models::Position::Bottom => models::TabChar::Jbr.val(),
     };
 
+    // Right side before big cell
+    let rs_bbc = models::TabChar::Jr.val();
+    // Right side big cell before big cell
+    let rsbc_bbc = models::TabChar::Bv.val();
+    // Right side big cell
+    let rsbc = models::TabChar::Jl.val();
+
     let line = models::TabChar::Bh.val().to_string().repeat(cell_length);
+    let line_h = models::TabChar::Bh
+        .val()
+        .to_string()
+        .repeat(cell_length_hours);
 
     // Print the line
-    print!("\n{}{}{}", ls, line, ms);
+    print!("\n{}{}{}", ls, line_h, ms);
     for i in 0..number_cell - 2 {
+        // Check if it's a big cell
         match skip_with.get(&i) {
-            Some(text) => print!("{:^cell_length$}{}", text, ms),
-            None => print!("{}{}", line, ms),
+            Some(text) => match skip_with.get(&(i + 1)) {
+                // Match check if the next cell will be big
+                Some(_) => print!("{:^cell_length$}{}", text, rsbc_bbc),
+                None => print!("{:^cell_length$}{}", text, rsbc),
+            },
+            None => match skip_with.get(&(i + 1)) {
+                // Match check if the next cell will be big
+                Some(_) => print!("{}{}", line, rs_bbc),
+                None => print!("{}{}", line, ms),
+            },
         }
     }
     println!("{}{}", line, rs);

@@ -354,7 +354,7 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
 
     // Store the data of the course for utils::line_table
     let mut next_skip = HashMap::new();
-    // For each hours
+    // For each hours -- i the hour's number
     for (i, hour) in timetable.0.into_iter().enumerate() {
         // Draw separator line
         utils::line_table(clh, cl, cn, Position::Middle, next_skip);
@@ -365,20 +365,21 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
         // Print hour
         print!("{}{:^clh$}", sep, hour);
 
-        // For all the days
+        // For all the days - `j` the day's number
         for (j, day) in (&timetable.1 .1).iter().enumerate() {
             // True if we found something about the slot we are looking for
             let mut info_slot = false;
-            // For all the courses of each days
+
+            // For all the courses of each days - `k` the possible course.start
             for (k, course_opt) in (&day.courses).iter().enumerate() {
                 match course_opt {
                     // If there is a course
                     Some(course) => {
                         // Check the course's hour
-                        if i == k {
+                        if i == course.start {
                             if course.size > 1 {
                                 // If the course uses more than one time slot
-                                next_skip.insert(course.start, &course.name);
+                                next_skip.insert(j, &course.name);
                                 print!("{}{:^cl$}", sep, "");
                                 info_slot = true;
                                 break;
@@ -406,6 +407,7 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
             if !info_slot {
                 // We found nothing about the slot because the precedent course
                 // takes more place than one slot
+                print!("{}{:^cl$}", sep, "");
             }
         }
         print!("{}", sep);

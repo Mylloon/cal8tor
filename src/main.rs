@@ -69,5 +69,6 @@ async fn main() {
         // Show the calendar
         println!("Displaying...");
         timetable::display(timetable);
+        println!("You may need to turn your terminal emulator in fullscreen if it's not already the case.");
     }
 }

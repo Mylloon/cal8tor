@@ -335,6 +335,8 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
     let clh = 11;
     // Cell number
     let cn = 6;
+    // 3/4 of cell length
+    let quarter = (3 * cl) / 4;
 
     let sep = TabChar::Bv.val();
 
@@ -376,15 +378,27 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>))) {
                     Some(course) => {
                         // Check the course's hour
                         if i == course.start {
+                            // If the course uses more than one time slot
                             if course.size > 1 {
-                                // If the course uses more than one time slot
-                                next_skip.insert(j, &course.name);
-                                print!("{}{:^cl$}", sep, "");
+                                // If the data is too long
+                                if course.name.len() > quarter {
+                                    let data = utils::split_half(&course.name);
+                                    next_skip.insert(j, data.1);
+                                    print!("{}{:^cl$}", sep, data.0);
+                                } else {
+                                    next_skip.insert(j, &course.name);
+                                    print!("{}{:^cl$}", sep, "");
+                                }
                                 info_slot = true;
                                 break;
                             } else {
                                 // Else simply print the course
-                                print!("{}{:^cl$}", sep, &course.name);
+                                // If the data is too long
+                                if course.name.len() > quarter {
+                                    print!("{}{:^cl$}", sep, utils::etc_str(&course.name));
+                                } else {
+                                    print!("{}{:^cl$}", sep, &course.name);
+                                }
                                 info_slot = true;
                                 break;
                             }

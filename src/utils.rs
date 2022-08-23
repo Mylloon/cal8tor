@@ -82,3 +82,21 @@ pub fn line_table(
     }
     println!("{}{}", line, rs);
 }
+
+// Split a string in half with respect of words
+pub fn split_half(text: &str) -> (&str, &str) {
+    let mid = text.len() / 2;
+    for (i, j) in (mid..text.len()).enumerate() {
+        if text.as_bytes()[j] == b' ' {
+            return text.split_at(mid + i);
+        }
+    }
+
+    text.split_at(mid)
+}
+
+
+// Reduce size of string by adding etc. to it, and cutting some info
+pub fn etc_str(text: &str) -> String {
+    format!("{}...", split_half(text).0)
+}

@@ -51,7 +51,7 @@ async fn main() {
         "Fetch the timetable for L{}{}{}...",
         year,
         seperator,
-        letter.unwrap_or_default()
+        letter.unwrap_or_default().to_uppercase()
     );
     let timetable = timetable::timetable(year, args.semester, letter).await;
 

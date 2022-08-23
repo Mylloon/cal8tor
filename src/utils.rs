@@ -18,14 +18,11 @@ fn err_code(code: i32) -> String {
 
 /// Print a line for the table
 pub fn line_table(cell_length: usize, number_cell: usize, pos: models::Position, skip_with: std::collections::HashMap<usize, &str>) {
-    let err_msg = "Unknown position";
-
     // Left side
     let ls = match pos {
         models::Position::Top => models::TabChar::Jtl.val(),
         models::Position::Middle => models::TabChar::Jl.val(),
         models::Position::Bottom => models::TabChar::Jbl.val(),
-        _ => panic!("{}", err_msg),
     };
 
     // Middle
@@ -33,7 +30,6 @@ pub fn line_table(cell_length: usize, number_cell: usize, pos: models::Position,
         models::Position::Top => models::TabChar::Jtb.val(),
         models::Position::Middle => models::TabChar::Jm.val(),
         models::Position::Bottom => models::TabChar::Jtt.val(),
-        _ => panic!("{}", err_msg),
     };
 
     // Right side
@@ -41,7 +37,6 @@ pub fn line_table(cell_length: usize, number_cell: usize, pos: models::Position,
         models::Position::Top => models::TabChar::Jtr.val(),
         models::Position::Middle => models::TabChar::Jr.val(),
         models::Position::Bottom => models::TabChar::Jbr.val(),
-        _ => panic!("{}", err_msg),
     };
 
     let line = models::TabChar::Bh.val().to_string().repeat(cell_length);

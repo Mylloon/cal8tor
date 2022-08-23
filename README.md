@@ -24,11 +24,12 @@ $ cargo build --release && cd target/release/
 $ ./cal8tor --help
 ```
 
-## ***WIP:*** See the calendar in your terminal
+## See the calendar in your terminal
 For the L2-X, run:
 ```bash
 $ ./cal8tor l2-X
 ```
+> The rendering can sometimes be unreadable and/or hard to read.
 
 ## Export the calendar in .ics format
 For the L1-A, run:

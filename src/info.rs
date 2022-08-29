@@ -3,8 +3,10 @@ use regex::{Captures, Regex};
 use scraper::{Html, Selector};
 use std::collections::HashMap;
 
-pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, i64)>> {
-    let document = get_webpage().await.expect("Can't reach info website.");
+pub async fn info(user_agent: &str) -> HashMap<usize, Vec<(DateTime<Utc>, i64)>> {
+    let document = get_webpage(user_agent)
+        .await
+        .expect("Can't reach info website.");
 
     // Selectors
     let sel_ul = Selector::parse("ul").unwrap();
@@ -58,14 +60,11 @@ pub async fn info() -> HashMap<usize, Vec<(DateTime<Utc>, i64)>> {
 }
 
 /// Get info webpage
-async fn get_webpage() -> Result<Html, Box<dyn std::error::Error>> {
+async fn get_webpage(user_agent: &str) -> Result<Html, Box<dyn std::error::Error>> {
     let url = "https://informatique.up8.edu/licence-iv/edt";
 
-    // We don't use reqwest::get() but a client with a custom user-agent
-    // in order to avoid getting rate limit
-    let client = reqwest::Client::builder()
-        .user_agent("bypass-rate_limit")
-        .build()?;
+    // Use custom User-Agent
+    let client = reqwest::Client::builder().user_agent(user_agent).build()?;
     let html = client.get(url).send().await?.text().await?;
 
     // Panic on error

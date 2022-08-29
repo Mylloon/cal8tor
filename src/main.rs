@@ -51,16 +51,18 @@ async fn main() {
         None => "",
     };
 
+    let user_agent = format!("cal8tor/{}", env!("CARGO_PKG_VERSION"));
+
     println!(
         "Récupération de l'emploi du temps des L{}{}{}...",
         year,
         seperator,
         letter.unwrap_or_default().to_uppercase()
     );
-    let timetable = timetable::timetable(year, args.semester, letter).await;
+    let timetable = timetable::timetable(year, args.semester, letter, &user_agent).await;
 
     println!("Récupération des informations par rapport à l'année...");
-    let info = info::info().await;
+    let info = info::info(&user_agent).await;
 
     if args.export.is_some() {
         // Export the calendar

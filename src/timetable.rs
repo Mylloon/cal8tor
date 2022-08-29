@@ -15,10 +15,11 @@ pub async fn timetable(
     year: i8,
     semester_opt: Option<i8>,
     letter: Option<char>,
+    user_agent: &str,
 ) -> (Vec<String>, (usize, Vec<models::Day>)) {
     let semester = get_semester(semester_opt, letter);
 
-    let document = get_webpage(year, semester, letter)
+    let document = get_webpage(year, semester, letter, user_agent)
         .await
         .expect("Can't reach timetable website.");
 
@@ -126,6 +127,7 @@ async fn get_webpage(
     year: i8,
     semester: i8,
     letter: Option<char>,
+    user_agent: &str,
 ) -> Result<Html, Box<dyn std::error::Error>> {
     let url = {
         let panic_semester_message = "Unknown semester.";
@@ -168,8 +170,9 @@ async fn get_webpage(
         }
     };
 
-    // Get raw html
-    let html = reqwest::get(&url).await?.text().await?;
+    // Use custom User-Agent
+    let client = reqwest::Client::builder().user_agent(user_agent).build()?;
+    let html = client.get(&url).send().await?.text().await?;
 
     // Panic on error
     crate::utils::check_errors(&html, &url);

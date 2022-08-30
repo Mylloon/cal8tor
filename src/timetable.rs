@@ -132,38 +132,41 @@ async fn get_webpage(
         let panic_letter_message = "Unknown letter.";
 
         let base_url = "https://informatique.up8.edu/licence-iv/edt";
+        let allow_letters_1 = match semester {
+            1 => ['a', 'b', 'c'],
+            2 => ['x', 'y', 'z'],
+            _ => panic!("{}", panic_semester_message),
+        };
+        let allow_letters_2_3 = match semester {
+            1 => ['a', 'b'],
+            2 => ['x', 'y'],
+            _ => panic!("{}", panic_semester_message),
+        };
         match year {
             1 => {
-                let allow_letters = match semester {
-                    1 => ['a', 'b', 'c'],
-                    2 => ['x', 'y', 'z'],
-                    _ => panic!("{}", panic_semester_message),
-                };
                 let c = letter.expect(panic_letter_message).to_ascii_lowercase();
-                if allow_letters.contains(&c) {
+                if allow_letters_1.contains(&c) {
                     format!("{}/l1-{}.html", base_url, c)
                 } else {
                     panic!("{}", panic_letter_message)
                 }
             }
             2 => {
-                let allow_letters = match semester {
-                    1 => ['a', 'b'],
-                    2 => ['x', 'y'],
-                    _ => panic!("{}", panic_semester_message),
-                };
                 let c = letter.expect(panic_letter_message).to_ascii_lowercase();
-                if allow_letters.contains(&c) {
+                if allow_letters_2_3.contains(&c) {
                     format!("{}/l2-{}.html", base_url, c)
                 } else {
                     panic!("{}", panic_letter_message)
                 }
             }
-            3 => match semester {
-                1 => format!("{}/l3.html", base_url),
-                2 => format!("{}/l3_2.html", base_url),
-                _ => panic!("{}", panic_semester_message),
-            },
+            3 => {
+                let c = letter.expect(panic_letter_message).to_ascii_lowercase();
+                if allow_letters_2_3.contains(&c) {
+                    format!("{}/l3-{}.html", base_url, c)
+                } else {
+                    panic!("{}", panic_letter_message)
+                }
+            }
             _ => panic!("Unknown year."),
         }
     };

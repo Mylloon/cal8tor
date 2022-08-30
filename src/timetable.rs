@@ -50,6 +50,7 @@ pub async fn timetable(
 
     // For each days
     let mut timetable = Vec::new();
+    let span_regex = Regex::new(r"<span.*</span>").unwrap();
     for day in raw_timetable_values.select(&sel_tr) {
         let mut courses_vec = Vec::new();
         let mut location_tracker = 0;
@@ -60,12 +61,9 @@ pub async fn timetable(
             } else {
                 courses_vec.push(Some(models::Course {
                     name: match course.select(&sel_em).next() {
-                        Some(value) => value.inner_html(),
-                        None => course
-                            .inner_html()
-                            .split("<br>")
-                            .next()
-                            .unwrap()
+                        Some(value) => span_regex.replace(&value.inner_html(), " ").to_string(),
+                        None => span_regex
+                            .replace(course.inner_html().split("<br>").next().unwrap(), " ")
                             .to_string(),
                     },
                     professor: match course

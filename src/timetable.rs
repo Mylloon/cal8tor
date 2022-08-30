@@ -4,7 +4,7 @@ use scraper::{Html, Selector};
 use std::collections::HashMap;
 
 use crate::utils::{
-    self,
+    self, capitalize,
     models::{Position, TabChar},
 };
 
@@ -85,12 +85,14 @@ pub async fn timetable(
                         }
                         None => None,
                     },
-                    room: course
-                        .select(&sel_strong)
-                        .next()
-                        .unwrap()
-                        .inner_html()
-                        .replace("<br>", ""),
+                    room: capitalize(
+                        &mut course
+                            .select(&sel_strong)
+                            .next()
+                            .unwrap()
+                            .inner_html()
+                            .replace("<br>", ""),
+                    ),
                     start: location_tracker,
                     size: match course.value().attr("colspan") {
                         Some(i) => i.parse().unwrap(),

@@ -75,7 +75,7 @@ pub fn line_table(
                 Some(text) => {
                     println!("{:^cell_length$}{}", text, rsbc_bbc);
                     last_day = true;
-                },
+                }
                 None => (),
             }
         } else {
@@ -113,4 +113,13 @@ pub fn split_half(text: &str) -> (&str, &str) {
 // Reduce size of string by adding etc. to it, and cutting some info
 pub fn etc_str(text: &str) -> String {
     format!("{}...", split_half(text).0.trim())
+}
+
+// Capitalize string
+pub fn capitalize(text: &mut str) -> String {
+    if let Some(r) = text.get_mut(0..1) {
+        r.make_ascii_uppercase();
+    }
+
+    text.to_string()
 }

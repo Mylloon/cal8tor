@@ -65,22 +65,37 @@ pub fn line_table(
     };
 
     // Courses columns
-    for i in 0..number_cell - 2 {
+    let range = number_cell - 1;
+    let mut last_day = false;
+    for i in 0..range {
         // Check if it's a big cell
-        match skip_with.get(&i) {
-            Some(text) => match skip_with.get(&(i + 1)) {
-                // Match check if the next cell will be big
-                Some(_) => print!("{:^cell_length$}{}", text, rsbc_bbc),
-                None => print!("{:^cell_length$}{}", text, rsbc),
-            },
-            None => match skip_with.get(&(i + 1)) {
-                // Match check if the next cell will be big
-                Some(_) => print!("{}{}", line, rs_bbc),
-                None => print!("{}{}", line, ms),
-            },
+        if i == range - 1 {
+            // Friday only
+            match skip_with.get(&i) {
+                Some(text) => {
+                    println!("{:^cell_length$}{}", text, rsbc_bbc);
+                    last_day = true;
+                },
+                None => (),
+            }
+        } else {
+            match skip_with.get(&i) {
+                Some(text) => match skip_with.get(&(i + 1)) {
+                    // Match check if the next cell will be big
+                    Some(_) => print!("{:^cell_length$}{}", text, rsbc_bbc),
+                    None => print!("{:^cell_length$}{}", text, rsbc),
+                },
+                None => match skip_with.get(&(i + 1)) {
+                    // Match check if the next cell will be big
+                    Some(_) => print!("{}{}", line, rs_bbc),
+                    None => print!("{}{}", line, ms),
+                },
+            }
         }
     }
-    println!("{}{}", line, rs);
+    if !last_day {
+        println!("{}{}", line, rs);
+    }
 }
 
 // Split a string in half with respect of words

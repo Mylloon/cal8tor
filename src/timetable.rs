@@ -236,7 +236,8 @@ pub fn build(timetable: T, dates: D) -> Vec<models::Course> {
     // h1 => heure de début | m1 => minute de début
     // h2 => heure de fin   | m2 => minute de fin
     let re =
-        Regex::new(r"(?P<h1>\d{1,2})h(?P<m1>\d{1,2})?.(?P<h2>\d{1,2})h(?P<m2>\d{1,2})?").unwrap();
+        Regex::new(r"(?P<h1>\d{1,2})(h|:)(?P<m1>\d{1,2})?.(?P<h2>\d{1,2})(h|:)(?P<m2>\d{1,2})?")
+            .unwrap();
     for hour in timetable.0 {
         let captures = re.captures(&hour).unwrap();
 

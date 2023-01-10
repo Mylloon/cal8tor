@@ -1,6 +1,6 @@
 [package]
 name = "cal8tor"
-version = "0.4.1"
+version = "0.4.2"
 authors = ["Mylloon"]
 edition = "2021"
 description = "Extractor of the calendar of the IT degree of university Paris 8"

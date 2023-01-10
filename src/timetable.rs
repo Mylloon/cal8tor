@@ -353,7 +353,7 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>)), cell_length:
 
     // Print day's of the week
     let mut days = HashMap::new();
-    for (i, data) in (&timetable.1 .1).iter().enumerate() {
+    for (i, data) in timetable.1 .1.iter().enumerate() {
         days.insert(i, &data.name);
         print!("{:^cell_length$}{}", &data.name, sep);
     }
@@ -372,12 +372,12 @@ pub fn display(timetable: (Vec<String>, (usize, Vec<models::Day>)), cell_length:
         print!("{}{:^clh$}", sep, hour);
 
         // For all the days - `j` the day's number
-        for (j, day) in (&timetable.1 .1).iter().enumerate() {
+        for (j, day) in timetable.1 .1.iter().enumerate() {
             // True if we found something about the slot we are looking for
             let mut info_slot = false;
 
             // For all the courses of each days - `k` the possible course.start
-            for (k, course_opt) in (&day.courses).iter().enumerate() {
+            for (k, course_opt) in day.courses.iter().enumerate() {
                 match course_opt {
                     // If there is a course
                     Some(course) => {

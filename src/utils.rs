@@ -71,12 +71,9 @@ pub fn line_table(
         // Check if it's a big cell
         if i == range - 1 {
             // Friday only
-            match skip_with.get(&i) {
-                Some(text) => {
-                    println!("{:^cell_length$}{}", text, rsbc_bbc);
-                    last_day = true;
-                }
-                None => (),
+            if let Some(text) = skip_with.get(&i) {
+                println!("{:^cell_length$}{}", text, rsbc_bbc);
+                last_day = true;
             }
         } else {
             match skip_with.get(&i) {

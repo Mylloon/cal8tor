@@ -14,7 +14,7 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: String) 
         timezone_name,
         Standard::new(
             // Add a Z because it's UTC
-            dt_ical(chrono::Utc.ymd(1970, 1, 1).and_hms(0, 0, 0)) + "Z",
+            dt_ical(chrono::Utc.with_ymd_and_hms(1970, 1, 1, 0, 0, 0).unwrap()) + "Z",
             "+0100",
             "+0200",
         ),

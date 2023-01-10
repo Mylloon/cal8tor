@@ -280,12 +280,26 @@ pub fn build(timetable: T, dates: D) -> Vec<models::Course> {
 
                     // Add the changed datetimes
                     course.dtstart = Some(
-                        Utc.ymd(date.year(), date.month(), date.day())
-                            .and_hms(start.0, start.1, 0),
+                        Utc.with_ymd_and_hms(
+                            date.year(),
+                            date.month(),
+                            date.day(),
+                            start.0,
+                            start.1,
+                            0,
+                        )
+                        .unwrap(),
                     );
                     course.dtend = Some(
-                        Utc.ymd(date.year(), date.month(), date.day())
-                            .and_hms(end.0, end.1, 0),
+                        Utc.with_ymd_and_hms(
+                            date.year(),
+                            date.month(),
+                            date.day(),
+                            end.0,
+                            end.1,
+                            0,
+                        )
+                        .unwrap(),
                     );
 
                     semester.push(course);

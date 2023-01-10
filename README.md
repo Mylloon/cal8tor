@@ -1,4 +1,4 @@
-# cal8tor • **cal**endar P**8** extrac**tor**
+# cal8tor • *cal*endar P*8* extrac*tor*
 
 Extracteur d'emploi du temps pour la licence d'informatique de Paris 8
 

@@ -11,7 +11,7 @@ publish = false
 
 [dependencies]
 reqwest = { version = "0.11" }
-tokio = { version = ">=1.13.1", features = ["full"] }
+tokio = { version = ">=1.23.1", features = ["full"] }
 scraper = "0.14"
 regex = ">=1.5.5"
 chrono = ">=0.4.23"

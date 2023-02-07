@@ -2,7 +2,7 @@
 
 Extracteur d'emploi du temps pour la licence d'informatique de Paris 8
 
-[![dependency status](https://deps.rs/repo/gitea/git.kennel.ml/Anri/cal8tor/status.svg)](https://deps.rs/repo/gitea/git.kennel.ml/Anri/cal8tor)
+[![dependency status](https://deps.rs/repo/gitea/git.mylloon.fr/Anri/cal8tor/status.svg)](https://deps.rs/repo/gitea/git.mylloon.fr/Anri/cal8tor)
 
 ## Installation
 
@@ -51,14 +51,14 @@ Vous aurez besoin de Rust pour compiler le programme.
 
 <details><summary>Vous avez aussi besoin d'<code>OpenSSL</code>.</summary>
 
--   Ubuntu: `sudo apt install libssl-dev`
--   Fedora: `dnf install openssl-devel`
+- Ubuntu: `sudo apt install libssl-dev`
+- Fedora: `dnf install openssl-devel`
 </details>
 
 1. Clone le dépôt et s'y rendre
 
 ```bash
-$ git clone https://git.kennel.ml/Anri/cal8tor.git && cd cal8tor
+$ git clone https://git.mylloon.fr/Anri/cal8tor.git && cd cal8tor
 ```
 
 2. Compiler et installer l'application

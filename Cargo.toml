@@ -8,6 +8,7 @@ readme = "README.md"
 repository = "https://git.kennel.ml/Anri/cal8tor"
 keywords = ["scrape", "calendar"]
 publish = false
+license = "AGPL-3.0-or-later"
 
 [dependencies]
 reqwest = { version = "0.11" }

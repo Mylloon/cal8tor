@@ -85,14 +85,11 @@ pub async fn timetable(
                         }
                         None => None,
                     },
-                    room: capitalize(
-                        &mut course
-                            .select(&sel_strong)
-                            .next()
-                            .unwrap()
-                            .inner_html()
-                            .replace("<br>", ""),
-                    ),
+                    room: capitalize(&mut match course.select(&sel_strong).next() {
+                        Some(el) => el.inner_html().replace("<br>", ""),
+                        // Error in the site, silently passing... (the room is probably at the professor member)
+                        None => String::new(),
+                    }),
                     start: location_tracker,
                     size: match course.value().attr("colspan") {
                         Some(i) => i.parse().unwrap(),

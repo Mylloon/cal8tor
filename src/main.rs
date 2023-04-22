@@ -66,11 +66,12 @@ async fn main() {
 
     if args.export.is_some() {
         // Export the calendar
-        let filename = args.export.unwrap();
-        println!("Fichier .ICS construit et exporté ici : {}...", filename);
+        let mut filename = args.export.unwrap();
 
         let builded_timetable = timetable::build(timetable, info);
-        ics::export(builded_timetable, filename);
+        ics::export(builded_timetable, &mut filename);
+
+        println!("Fichier .ICS construit et exporté => {}", filename);
     } else {
         // Show the calendar
         println!("Affichage...");

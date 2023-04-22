@@ -5,7 +5,7 @@ use ics::{
     Event, ICalendar, Standard,
 };
 
-pub fn export(courses: Vec<crate::timetable::models::Course>, filename: String) {
+pub fn export(courses: Vec<crate::timetable::models::Course>, filename: &mut String) {
     let mut calendar = ICalendar::new("2.0", "cal8tor");
 
     // Add Europe/Paris timezone
@@ -61,12 +61,12 @@ pub fn export(courses: Vec<crate::timetable::models::Course>, filename: String) 
         calendar.add_event(event);
     }
 
-    calendar
-        .save_file(match filename {
-            x if x.ends_with(".ics") => x,
-            x => format!("{}.ics", x),
-        })
-        .unwrap();
+    // Add the extension if needed
+    if !filename.ends_with(".ics") {
+        *filename = format!("{}.ics", filename)
+    };
+
+    calendar.save_file(filename).unwrap();
 }
 
 /// Transform the datetime from chrono to the ICS format

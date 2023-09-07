@@ -77,9 +77,17 @@ async fn get_webpage(user_agent: &str) -> Result<Html, Box<dyn std::error::Error
 fn anglophonization(date: &str) -> String {
     let dico = HashMap::from([
         ("janvier", "january"),
+        ("février", "february"),
         ("mars", "march"),
+        ("avril", "april"),
+        ("mai", "may"),
+        ("juin", "june"),
+        ("juillet", "july"),
+        ("août", "august"),
         ("septembre", "september"),
+        ("octobre", "october"),
         ("novembre", "november"),
+        ("décembre", "december"),
     ]);
 
     // New regex of all the french month

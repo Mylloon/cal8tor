@@ -1,4 +1,4 @@
-use chrono::{DateTime, TimeZone, Utc};
+use chrono::{DateTime, Utc};
 use regex::{Captures, Regex};
 use scraper::{Html, Selector};
 use std::collections::HashMap;
@@ -98,8 +98,8 @@ fn anglophonization(date: &str) -> String {
     .unwrap();
 
     format!(
-        // Use 12:00 for chrono parser
-        "{} 12:00",
+        // Use 12:00 and UTC TZ for chrono parser
+        "{} 12:00 +0000",
         // Replace french by english month
         re.replace_all(date, |cap: &Captures| match &cap[0] {
             month if dico.contains_key(month) => dico.get(month).unwrap(),
@@ -114,6 +114,8 @@ fn anglophonization(date: &str) -> String {
 fn get_date(date: &str) -> DateTime<Utc> {
     // Use and keep UTC time, we have the hour set to 12h and
     // Paris 8 is in France so there is no problems
-    Utc.datetime_from_str(&anglophonization(date), "%e %B %Y %H:%M")
+    eprintln!("-> {}", &anglophonization(date));
+    DateTime::parse_from_str(&anglophonization(date), "%e %B %Y %H:%M %z")
         .unwrap()
+        .into()
 }

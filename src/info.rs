@@ -93,10 +93,10 @@ fn anglophonization(date: &str) -> String {
         // Use 12:00 for chrono parser
         "{} 12:00",
         // Replace french by english month
-        re.replace_all(date, |cap: &Captures| {
-            match &cap[0] {
-                month if dico.contains_key(month) => dico.get(month).unwrap(),
-                month => panic!("Unknown month: {}", month),
+        re.replace_all(date, |cap: &Captures| match &cap[0] {
+            month if dico.contains_key(month) => dico.get(month).unwrap(),
+            month => {
+                panic!("Unknown month: {}", month)
             }
         })
     )
